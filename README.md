@@ -15,3 +15,11 @@ share similar interests or experiences.
 ## 4. NON-FUNCTIONAL REQUIREMENTS:-
 #### 4.1 Customizable Themes
 #### 4.2 Clean and simple User-Interface
+## 5.TEAM MEMBERS AND THEIR DOMAINS :- 
+#### 5.1 Anshukumar123975 -> BACK-END DEVELOPMENT
+#### 5.2 akshatxq -> WEB FRONT-END DEVELOPMENT
+#### 5.3 Chitransh1011 -> BACK-END DEVELOPMENT
+#### 5.4 nt0409 ->AI/ML
+#### 5.5 i-aman-jha -> APP DEVELOPMENT(FLUTTER)
+#### 5.6 cizz1 -> AI/ML
+#### 5.7 PearlGrell -> UI/UX AND APP DEVELOPMENT(FLUTTER)
