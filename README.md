@@ -22,4 +22,4 @@ share similar interests or experiences.
 #### 5.4 nt0409 ->AI/ML
 #### 5.5 i-aman-jha -> APP DEVELOPMENT(FLUTTER)
 #### 5.6 cizz1 -> AI/ML
-#### 5.7 PearlGrell -> UI/UX AND APP DEVELOPMENT(FLUTTER)
+#### 5.7 PearlGrell -> UI/UX DESIGN
