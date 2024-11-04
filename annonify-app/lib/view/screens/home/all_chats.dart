@@ -18,7 +18,7 @@ class AllChats extends StatelessWidget {
       body: Container(
         padding: const EdgeInsets.only(top: 30, left: 22, right: 22),
         decoration: BoxDecoration(
-          color: themeController.contentBG,
+          // color: themeController.contentBG,
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(24),
             topRight: Radius.circular(24),
