@@ -1,6 +1,6 @@
 import 'package:annonify/configs/Theme/colors.dart';
 import 'package:annonify/controller/auth/sign_up_controller.dart';
-import 'package:annonify/controller/theme_controller.dart';
+import 'package:annonify/controller/app/theme_controller.dart';
 import 'package:annonify/utils/validator/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -74,7 +74,9 @@ class SignUpForm extends StatelessWidget {
             const SizedBox(height: 35),
             Center(
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Get.toNamed('/chooseAvatar');
+                },
                 style: const ButtonStyle(
                   padding: WidgetStatePropertyAll(
                       EdgeInsets.symmetric(vertical: 15, horizontal: 60)),
@@ -88,7 +90,9 @@ class SignUpForm extends StatelessWidget {
               children: [
                 const Text("Already have an account?"),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Get.offNamed('/signin');
+                  },
                   child: const Text("LOGIN"),
                 )
               ],

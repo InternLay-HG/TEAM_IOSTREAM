@@ -1,6 +1,7 @@
 import 'package:annonify/configs/Theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 class ChooseAvatar extends StatelessWidget {
   const ChooseAvatar({super.key});
@@ -47,7 +48,9 @@ class ChooseAvatar extends StatelessWidget {
               Align(
                 alignment: const Alignment(1, 0),
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Get.offAllNamed('/home');
+                  },
                   child: const Text("Continue"),
                 ),
               )

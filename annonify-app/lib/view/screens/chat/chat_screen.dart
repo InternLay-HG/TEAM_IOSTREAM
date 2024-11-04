@@ -1,6 +1,6 @@
 import 'package:annonify/configs/Theme/colors.dart';
 import 'package:annonify/controller/chat/chat_controller.dart';
-import 'package:annonify/controller/theme_controller.dart';
+import 'package:annonify/controller/app/theme_controller.dart';
 import 'package:annonify/view/Screens/Chat/chat_details.dart';
 import 'package:annonify/view/Widgets/ellipsis_text.dart';
 import 'package:flutter/material.dart';
@@ -112,10 +112,7 @@ AppBar _buildAppBar(BuildContext context, Color primaryColor) {
     ),
     title: GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const ChatDetails()),
-        );
+        Get.toNamed('/chatDetails');
       },
       child: Row(
         children: [
