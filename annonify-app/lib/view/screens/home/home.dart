@@ -32,27 +32,33 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    final ThemeController themeController = Get.find<ThemeController>();
-
     return Scaffold(
-        appBar: _buildAppBar(_tabController),
-        body: Container(
-          decoration: BoxDecoration(
-            color: themeController.contentBG,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(24),
-              topRight: Radius.circular(24),
+      appBar: _buildAppBar(_tabController),
+      body: Obx(
+        () {
+          final ThemeController themeController = Get.find<ThemeController>();
+
+          return Container(
+            padding: const EdgeInsets.only(top: 30, left: 22, right: 22),
+            decoration: BoxDecoration(
+              color: themeController.contentBG,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(24),
+                topRight: Radius.circular(24),
+              ),
             ),
-          ),
-          child: TabBarView(
-            controller: _tabController,
-            children: const [
-              AllChats(),
-              Media(),
-              Links(),
-            ],
-          ),
-        ));
+            child: TabBarView(
+              controller: _tabController,
+              children: const [
+                AllChats(),
+                Media(),
+                Links(),
+              ],
+            ),
+          );
+        },
+      ),
+    );
   }
 }
 
