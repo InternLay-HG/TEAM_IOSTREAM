@@ -23,3 +23,6 @@ share similar interests or experiences.
 #### 5.5 i-aman-jha -> APP DEVELOPMENT(FLUTTER)
 #### 5.6 cizz1 -> AI/ML
 #### 5.7 PearlGrell -> UI/UX DESIGN
+## 6. FIGMA DESIGNS :-
+#### 6.1 Web : <a href="https://www.figma.com/design/4AjGXuaH6dpzJcJbfliZEY/Annonify-Web?node-id=0-1&t=51sJGV86eBme3Reu-1"> Annonify-Web </a>
+#### 6.2 App : <a href="https://www.figma.com/design/BF7PV6eROzhonY6XZ69Qs3/Annonify-Phone?node-id=0-1&t=B2T2wyL0rvZScP1C-1"> Annonify-Phone </a>
