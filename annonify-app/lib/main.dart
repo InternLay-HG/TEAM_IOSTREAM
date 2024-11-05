@@ -5,7 +5,6 @@ import 'package:annonify/controller/app/avatar_controller.dart';
 import 'package:annonify/controller/app/theme_controller.dart';
 import 'package:annonify/repositories/avatar_repo.dart';
 import 'package:annonify/view/screens/auth/signIn/sign_in.dart';
-import 'package:annonify/view/screens/home/home.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -23,6 +22,8 @@ class MyApp extends StatelessWidget {
     return Obx(() {
       return GetMaterialApp(
         debugShowCheckedModeBanner: false,
+        defaultTransition: Transition.fadeIn,
+        transitionDuration: const Duration(milliseconds: 500),
         title: 'Annonify',
         themeMode: themeController.themeMode,
         theme: lightTheme,

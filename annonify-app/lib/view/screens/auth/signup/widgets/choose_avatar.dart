@@ -50,7 +50,7 @@ class ChooseAvatar extends StatelessWidget {
                         },
                         child: avatar.svgData != null
                             ? SvgPicture.string(avatar.svgData!)
-                            : CircularProgressIndicator(),
+                            : const CircularProgressIndicator(),
                       );
                     },
                   ),

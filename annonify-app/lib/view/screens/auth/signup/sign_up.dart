@@ -1,7 +1,6 @@
 import 'package:annonify/view/screens/auth/signup/widgets/sign_up_form.dart';
 import 'package:annonify/view/widgets/sample.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class SignUpPage extends StatelessWidget {
   const SignUpPage({super.key});

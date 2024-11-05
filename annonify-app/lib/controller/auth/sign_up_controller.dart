@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 class SignUpController extends GetxController {
   static SignUpController get instance => Get.find();
-  
+
   final signUpFormKey = GlobalKey<FormState>();
 
   //TextField controllers
@@ -14,4 +14,12 @@ class SignUpController extends GetxController {
   //Obscure text controller
   final RxBool hidePassword = true.obs;
   final RxBool hideConfPassword = true.obs;
+
+  @override
+  void onClose() {
+    emailController.dispose();
+    passwordController.dispose();
+    confPassController.dispose();
+    super.onClose();
+  }
 }
