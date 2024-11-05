@@ -22,8 +22,6 @@ class MyApp extends StatelessWidget {
     return Obx(() {
       return GetMaterialApp(
         debugShowCheckedModeBanner: false,
-        defaultTransition: Transition.fadeIn,
-        transitionDuration: const Duration(milliseconds: 500),
         title: 'Annonify',
         themeMode: themeController.themeMode,
         theme: lightTheme,

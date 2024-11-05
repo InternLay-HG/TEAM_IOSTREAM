@@ -7,46 +7,92 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
-class ChatDetails extends StatelessWidget {
+class ChatDetails extends StatefulWidget {
   const ChatDetails({super.key});
+
+  @override
+  State<ChatDetails> createState() => _ChatDetailsState();
+}
+
+class _ChatDetailsState extends State<ChatDetails>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<Offset> _bodyAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+
+    _bodyAnimation = Tween<Offset>(
+      begin: const Offset(0, 1), // Slide down from top for Body
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOut,
+    ));
+
+    // Start animations when the screen is built
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  Future<bool> _onWillPop() async {
+    _animationController.reverse();
+    return true;
+  }
 
   @override
   Widget build(BuildContext context) {
     final ThemeController themeController = Get.find<ThemeController>();
 
     return SafeArea(
-      child: Scaffold(
-        // appBar: _buildAppBar(),
-        body: CustomScrollView(
-          slivers: [
-            SliverPersistentHeader(
-              delegate: SliverPersistentDelegate(),
-              pinned: true,
-            ),
-            SliverToBoxAdapter(
-              child: Container(
-                padding: const EdgeInsets.only(top: 30, left: 30, right: 30),
-                decoration: BoxDecoration(
-                  color: themeController.contentBG,
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(24),
-                    topRight: Radius.circular(24),
+      child: WillPopScope(
+        onWillPop: _onWillPop,
+        child: Scaffold(
+          body: CustomScrollView(
+            slivers: [
+              SliverPersistentHeader(
+                delegate: SliverPersistentDelegate(_animationController),
+                pinned: true,
+              ),
+              SliverToBoxAdapter(
+                child: SlideTransition(
+                  position: _bodyAnimation,
+                  child: Container(
+                    padding:
+                        const EdgeInsets.only(top: 30, left: 30, right: 30),
+                    decoration: BoxDecoration(
+                      color: themeController.contentBG,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(24),
+                        topRight: Radius.circular(24),
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildMedia(context),
+                        const SizedBox(height: 10),
+                        _buildDocuments(context),
+                        const SizedBox(height: 10),
+                        _buildLinks(context),
+                        const SizedBox(height: 10),
+                      ],
+                    ),
                   ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildMedia(context),
-                    const SizedBox(height: 10),
-                    _buildDocuments(context),
-                    const SizedBox(height: 10),
-                    _buildLinks(context),
-                    const SizedBox(height: 10),
-                  ],
-                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -60,7 +106,9 @@ class SliverPersistentDelegate extends SliverPersistentHeaderDelegate {
   final double maxImageSize = 86;
   final double minImageSize = 40;
 
-  SliverPersistentDelegate();
+  final AnimationController animationController;
+
+  SliverPersistentDelegate(this.animationController);
 
   @override
   Widget build(
@@ -79,147 +127,164 @@ class SliverPersistentDelegate extends SliverPersistentHeaderDelegate {
       minImageSize,
       maxImageSize,
     );
-    return Container(
-      color: Theme.of(context).appBarTheme.backgroundColor,
-      child: Stack(
-        children: [
-          Positioned(
-            top: MediaQuery.of(context).viewPadding.top + 10,
-            left: currentImagePosition + 50,
-            child: SizedBox(
-              width: (size.width - 50 - 25) * 0.7,
-              child: Opacity(
-                opacity: percent2,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    EllipsisText(
-                      text: "House of Geeks",
-                      textStyle: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    EllipsisText(
-                      text:
-                          "House of Geek is the technical society of Indian Institute of Information Technology, Ranchi. Lorem ipsum dolor si  amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.",
-                      textStyle: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ],
+
+    Animation<Offset> appBarAnimation = Tween<Offset>(
+      begin: const Offset(1, 0), // Slide in from right for AppBar
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: animationController,
+      curve: Curves.easeOut,
+    ));
+
+    return SlideTransition(
+      position: appBarAnimation,
+      child: Container(
+        color: Theme.of(context).appBarTheme.backgroundColor,
+        child: Stack(
+          children: [
+            Positioned(
+              top: MediaQuery.of(context).viewPadding.top + 10,
+              left: currentImagePosition + 50,
+              child: SizedBox(
+                width: (size.width - 50 - 25) * 0.7,
+                child: Opacity(
+                  opacity: percent2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      EllipsisText(
+                        text: "House of Geeks",
+                        textStyle: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      EllipsisText(
+                        text:
+                            "House of Geek is the technical society of Indian Institute of Information Technology, Ranchi. Lorem ipsum dolor si  amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.",
+                        textStyle: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          Positioned(
-            left: 0,
-            top: MediaQuery.of(context).viewPadding.top + 5,
-            child: Center(
-              child: IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.arrow_back_ios_new),
-              ),
-            ),
-          ),
-          Positioned(
-            right: 0,
-            top: MediaQuery.of(context).viewPadding.top + 5,
-            child: Visibility(
-              visible: percent2 > 0.7,
-              child: IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.more_vert,
+            Positioned(
+              left: 0,
+              top: MediaQuery.of(context).viewPadding.top + 5,
+              child: Center(
+                child: IconButton(
+                  onPressed: () {
+                    animationController.reverse();
+                    Get.back();
+                  },
+                  icon: const Icon(Icons.arrow_back_ios_new),
                 ),
               ),
             ),
-          ),
-          Positioned(
-            left: 30 + (15 * (percent2)),
-            top: MediaQuery.of(context).viewPadding.top +
-                (kToolbarHeight) * (1 - percent2),
-            bottom: 0,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: (percent2 > 0.83)
-                  ? MainAxisAlignment.center
-                  : MainAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    SvgPicture.asset(
-                      "assets/images/group_logo.svg",
-                      width: currentImageSize,
-                      height: currentImageSize,
-                    ),
-                    Visibility(
-                      visible: (1 - percent2) > 0.9,
-                      child: SizedBox(
-                        width: size.width - 45 - 85,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            MyIconButton(
-                              icon: Icons.edit,
-                              onTap: () {},
-                            ),
-                            MyIconButton(
-                              icon: Icons.favorite_border,
-                              onTap: () {},
-                            ),
-                            MyIconButton(
-                              icon: Icons.notifications_off,
-                              onTap: () {},
-                            ),
-                          ],
+            Positioned(
+              right: 0,
+              top: MediaQuery.of(context).viewPadding.top + 5,
+              child: Visibility(
+                visible: percent2 > 0.7,
+                child: IconButton(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.more_vert,
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              left: 30 + (15 * (percent2)),
+              top: MediaQuery.of(context).viewPadding.top +
+                  (kToolbarHeight) * (1 - percent2),
+              bottom: 0,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: (percent2 > 0.83)
+                    ? MainAxisAlignment.center
+                    : MainAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      SvgPicture.asset(
+                        "assets/images/group_logo.svg",
+                        width: currentImageSize,
+                        height: currentImageSize,
+                      ),
+                      Visibility(
+                        visible: (1 - percent2) > 0.9,
+                        child: SizedBox(
+                          width: size.width - 45 - 85,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              MyIconButton(
+                                icon: Icons.edit,
+                                onTap: () {},
+                              ),
+                              MyIconButton(
+                                icon: Icons.favorite_border,
+                                onTap: () {},
+                              ),
+                              MyIconButton(
+                                icon: Icons.notifications_off,
+                                onTap: () {},
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                Visibility(
-                  visible: (1 - percent2) > 0.9,
-                  child: const SizedBox(height: 20),
-                ),
-                Visibility(
-                  visible: (1 - percent2) > 0.9,
-                  child: Expanded(
-                    child: Container(
-                      width: size.width - 45,
-                      padding: const EdgeInsets.only(right: 25, bottom: 15),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                SizedBox(
-                                  width: (size.width - 50) * 0.6,
-                                  child: Text(
-                                    "House of Geeks - 1st Year",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .displayLarge,
+                    ],
+                  ),
+                  Visibility(
+                    visible: (1 - percent2) > 0.9,
+                    child: const SizedBox(height: 20),
+                  ),
+                  Visibility(
+                    visible: (1 - percent2) > 0.9,
+                    child: Expanded(
+                      child: Container(
+                        width: size.width - 45,
+                        padding: const EdgeInsets.only(right: 25, bottom: 15),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    width: (size.width - 50) * 0.6,
+                                    child: Text(
+                                      "House of Geeks - 1st Year",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .displayLarge,
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  "6660 members",
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              "House of Geek is the technical society of Indian Institute of Information Technology, Ranchi. Lorem ipsum dolor si amet, consectetur adipiscing elit, sed do eiusmod tempuse of Geek is the technical society of Indian Institute of Information Technology, Ranchi. Lorem ipsum dolor si amet, or rem ipsum dolor si amet, or si amet, .",
-                              style: Theme.of(context).textTheme.displaySmall,
-                            ),
-                          ],
+                                  Text(
+                                    "6660 members",
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                "House of Geek is the technical society of Indian Institute of Information Technology, Ranchi. Lorem ipsum dolor si amet, consectetur adipiscing elit, sed do eiusmod tempuse of Geek is the technical society of Indian Institute of Information Technology, Ranchi. Lorem ipsum dolor si amet, or rem ipsum dolor si amet, or si amet, .",
+                                style: Theme.of(context).textTheme.displaySmall,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

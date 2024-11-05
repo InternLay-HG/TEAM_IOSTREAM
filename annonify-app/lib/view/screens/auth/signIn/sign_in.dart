@@ -30,7 +30,7 @@ class SignInPage extends StatelessWidget {
                       style: Theme.of(context).textTheme.displayMedium,
                     ),
                     const SizedBox(height: 20),
-                    SignInForm(),
+                    const SignInForm(),
                   ],
                 ),
               ),
