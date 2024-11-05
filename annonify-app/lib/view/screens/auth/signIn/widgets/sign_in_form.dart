@@ -67,7 +67,7 @@ class SignInForm extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Don't have an account?"),
+                const Flexible(child: Text("Don't have an account?")),
                 TextButton(
                   onPressed: () {
                     Get.offNamed('/signup');

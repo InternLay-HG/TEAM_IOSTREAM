@@ -88,7 +88,7 @@ class SignUpForm extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Already have an account?"),
+                const Flexible(child: Text("Already have an account?")),
                 TextButton(
                   onPressed: () {
                     Get.offNamed('/signin');
