@@ -1,5 +1,5 @@
 import 'package:annonify/configs/Theme/colors.dart';
-import 'package:annonify/controller/theme_controller.dart';
+import 'package:annonify/controller/app/theme_controller.dart';
 import 'package:annonify/view/Screens/Chat/chat_screen.dart';
 import 'package:annonify/view/Widgets/ellipsis_text.dart';
 import 'package:flutter/cupertino.dart';
@@ -38,8 +38,7 @@ class AllChats extends StatelessWidget {
             hoverColor: Colors.white,
             splashColor: Colors.white,
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ChatScreen()));
+              Get.toNamed('/chat');
             },
           ),
         );

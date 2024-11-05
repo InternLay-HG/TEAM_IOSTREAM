@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 
 class AppRouter {
   static final routes = [
-    GetPage(name: "/", page: () => const HomePage()),
+    GetPage(name: "/home", page: () => const HomePage()),
     GetPage(name: "/signup", page: () => const SignUpPage()),
     GetPage(name: "/signin", page: () => const SignInPage()),
     GetPage(name: "/chooseAvatar", page: () => const ChooseAvatar()),

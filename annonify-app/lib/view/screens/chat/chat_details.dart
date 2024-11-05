@@ -1,5 +1,5 @@
 import 'package:annonify/configs/Theme/colors.dart';
-import 'package:annonify/controller/theme_controller.dart';
+import 'package:annonify/controller/app/theme_controller.dart';
 import 'package:annonify/view/Widgets/ellipsis_text.dart';
 import 'package:annonify/view/screens/chat/widgets/file_tile.dart';
 import 'package:annonify/view/widgets/my_icon_button.dart';
