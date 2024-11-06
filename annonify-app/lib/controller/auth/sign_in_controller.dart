@@ -6,10 +6,17 @@ class SignInController extends GetxController {
 
   final signInFormKey = GlobalKey<FormState>();
 
-  //Textfield controllers
+  //TextField controllers
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   //Obscure text controller
   final RxBool hidePassword = true.obs;
+
+  @override
+  void onClose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.onClose();
+  }
 }

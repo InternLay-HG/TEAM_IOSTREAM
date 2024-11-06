@@ -1,6 +1,4 @@
-import 'package:annonify/controller/app/theme_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class DarkThemeColors {
   static const Color primaryColor = Color(0xff1d1d1d);
@@ -10,6 +8,8 @@ class DarkThemeColors {
   static const Color highlightColor = Color(0xff1f1f1f);
   static const Color accentColor = Color(0xff106cb8);
   static const Color secondaryTextColor = Color(0xffc3c3c3);
+  static const Color senderBubbleColor = Color(0xffb17ec9);
+  static const Color receiverBubbleColor = Color(0xff407eb0);
 }
 
 class LightThemeColors {
@@ -20,4 +20,6 @@ class LightThemeColors {
   static const Color highlightColor = Color(0xffe0e0e0);
   static const Color accentColor = Color(0xff106cb8);
   static const Color secondaryTextColor = Color(0xff4f4f4f);
+  static const Color senderBubbleColor = Color(0xff7725ad);
+  static const Color receiverBubbleColor = Color(0xff106cb8);
 }
