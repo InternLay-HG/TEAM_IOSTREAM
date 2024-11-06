@@ -54,7 +54,7 @@ class SignInForm extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  Get.offNamed('/home');
+                  Get.offAllNamed('/home');
                 },
                 style: const ButtonStyle(
                   padding: WidgetStatePropertyAll(

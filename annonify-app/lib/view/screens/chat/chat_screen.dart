@@ -2,6 +2,7 @@ import 'package:annonify/configs/Theme/colors.dart';
 import 'package:annonify/controller/chat/chat_controller.dart';
 import 'package:annonify/controller/app/theme_controller.dart';
 import 'package:annonify/view/Widgets/ellipsis_text.dart';
+import 'package:annonify/view/screens/chat/widgets/chat_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -91,6 +92,17 @@ class _ChatScreenState extends State<ChatScreen>
                       height: double.infinity,
                     ),
                     // Add chat messages or other content here
+                    ListView(
+                      children: const [
+                        SentMessage(
+                            message:
+                                "nhasfjasd fgeuf gjdsas fjasd fgeufgj dsasfjas dfgeufgjd sasfj as dfge ufgjds sdfge ufgjdsa sfjasdfgeu fgjdsasfjmar  "),
+                        SizedBox(height: 10),
+                        ReceiveMessage(
+                            message:
+                                "hasfjasd fgeuf gjdsas fjasd fgeufgj dsasfjas dfgeufgjd sasfj as dfge ufgjds sdfge ufgjdsa sfjasdfgeu fgjdsasfjmar  "),
+                      ],
+                    ),
                   ],
                 ),
               ),

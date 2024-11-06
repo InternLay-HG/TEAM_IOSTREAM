@@ -1,6 +1,3 @@
-import 'package:annonify/configs/Theme/colors.dart';
-import 'package:annonify/controller/app/theme_controller.dart';
-import 'package:annonify/view/Screens/Chat/chat_screen.dart';
 import 'package:annonify/view/Widgets/ellipsis_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
