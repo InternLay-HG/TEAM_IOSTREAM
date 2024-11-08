@@ -17,7 +17,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late AnimationController _animationController;
-  late Animation<Offset> _appBarAnimation;
   late Animation<Offset> _bodyAnimation;
   late TabController _tabController;
   final SearchBarController _searchBarController =
@@ -31,14 +30,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
-
-    _appBarAnimation = Tween<Offset>(
-      begin: const Offset(1, 0), // Slide in from right for AppBar
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOut,
-    ));
 
     _bodyAnimation = Tween<Offset>(
       begin: const Offset(0, -1), // Slide down from top for Body
@@ -68,7 +59,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return PopScope(
       onPopInvokedWithResult: _onPop,
       child: Scaffold(
-        appBar: _buildAppBar(context, _tabController, _searchBarController),
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(120),
+          child: _buildAppBar(context, _tabController, _searchBarController),
+        ),
         body: SlideTransition(
           position: _bodyAnimation,
           child: Obx(
@@ -102,122 +96,117 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 }
 
-AppBar _buildAppBar(BuildContext context, TabController tabController,
+Widget _buildAppBar(BuildContext context, TabController tabController,
     SearchBarController searchBarController) {
   final themeController = Get.find<ThemeController>();
 
-  return AppBar(
-    toolbarHeight: 64,
-    title: Obx(
-      () => searchBarController.isSearching.value
-          ? AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              transitionBuilder: (Widget child, Animation<double> animation) {
-                return SlideTransition(
-                  position: Tween<Offset>(
-                    begin: const Offset(-1.0, 0),
-                    end: const Offset(0, 0),
-                  ).animate(animation),
-                  child: FadeTransition(opacity: animation, child: child),
-                );
-              },
-              child: TextField(
-                key: const ValueKey('searchBar'),
-                controller: searchBarController.controller,
-                cursorColor: themeController.secondaryTextColor,
-                autofocus: true,
-                decoration: const InputDecoration(
-                  hintText: 'Search...',
-                  border: InputBorder.none,
+  return Obx(() => AppBar(
+        // toolbarHeight: 64,
+        title: searchBarController.isSearching.value
+            ? AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                transitionBuilder: (Widget child, Animation<double> animation) {
+                  return SlideTransition(
+                    position: Tween<Offset>(
+                      begin: const Offset(-1.0, 0),
+                      end: const Offset(0, 0),
+                    ).animate(animation),
+                    child: FadeTransition(opacity: animation, child: child),
+                  );
+                },
+                child: TextField(
+                  key: const ValueKey('searchBar'),
+                  controller: searchBarController.controller,
+                  cursorColor: themeController.secondaryTextColor,
+                  autofocus: true,
+                  decoration: const InputDecoration(
+                    hintText: 'Search...',
+                    border: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                  ),
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
-                style: Theme.of(context).textTheme.bodyMedium,
+              )
+            : AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                transitionBuilder: (Widget child, Animation<double> animation) {
+                  return SlideTransition(
+                    position: Tween<Offset>(
+                      begin: const Offset(-1, 0),
+                      end: const Offset(0, 0),
+                    ).animate(animation),
+                    child: FadeTransition(opacity: animation, child: child),
+                  );
+                },
+                child: const Text(
+                  "Annonify",
+                  style: TextStyle(fontFamily: 'SankofaDisplay', fontSize: 28),
+                ),
               ),
-            )
-          : AnimatedSwitcher(
+        leading: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          transitionBuilder: (Widget child, Animation<double> animation) {
+            return RotationTransition(
+              turns: Tween<double>(begin: 0, end: 1.0).animate(animation),
+              child: FadeTransition(opacity: animation, child: child),
+            );
+          },
+          child: IconButton(
+            key: ValueKey(searchBarController.isSearching.value),
+            icon: Icon(
+              searchBarController.isSearching.value
+                  ? Icons.arrow_back_ios_new
+                  : Icons.search,
+              color: DarkThemeColors.accentColor,
+            ),
+            onPressed: () {
+              searchBarController.toggleSearch();
+            },
+          ),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: AnimatedSwitcher(
               duration: const Duration(milliseconds: 300),
               transitionBuilder: (Widget child, Animation<double> animation) {
-                return SlideTransition(
-                  position: Tween<Offset>(
-                    begin: const Offset(-1, 0),
-                    end: const Offset(0, 0),
-                  ).animate(animation),
+                return RotationTransition(
+                  turns: Tween<double>(begin: 0.5, end: 1.0).animate(animation),
                   child: FadeTransition(opacity: animation, child: child),
                 );
               },
-              child: const Text(
-                "Annonify",
-                style: TextStyle(fontFamily: 'SankofaDisplay', fontSize: 28),
-              ),
-            ),
-    ),
-    leading: Obx(
-      () => AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
-        transitionBuilder: (Widget child, Animation<double> animation) {
-          return RotationTransition(
-            turns: Tween<double>(begin: 0.5, end: 1.0).animate(animation),
-            child: FadeTransition(opacity: animation, child: child),
-          );
-        },
-        child: IconButton(
-          key: ValueKey(searchBarController.isSearching.value),
-          icon: Icon(
-            searchBarController.isSearching.value
-                ? Icons.arrow_back_ios_new
-                : Icons.search,
-            color: DarkThemeColors.accentColor,
-          ),
-          onPressed: () {
-            searchBarController.toggleSearch();
-          },
-        ),
-      ),
-    ),
-    actions: [
-      Padding(
-        padding: const EdgeInsets.only(right: 10),
-        child: Obx(
-          () => AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            transitionBuilder: (Widget child, Animation<double> animation) {
-              return RotationTransition(
-                turns: Tween<double>(begin: 0.5, end: 1.0).animate(animation),
-                child: FadeTransition(opacity: animation, child: child),
-              );
-            },
-            child: searchBarController.isSearching.value
-                ? IconButton(
-                    key: const ValueKey('clearButton'),
-                    onPressed: () {
-                      searchBarController.clearSearchQuery();
-                    },
-                    icon: const Icon(Icons.clear),
-                  )
-                : InkWell(
-                    key: const ValueKey('logo'),
-                    onTap: () {
-                      themeController.toggleTheme();
-                    },
-                    child: ClipOval(
-                      child: SvgPicture.asset(
-                        "assets/images/group_logo.svg",
-                        height: 40,
-                        width: 40,
+              child: searchBarController.isSearching.value
+                  ? IconButton(
+                      key: const ValueKey('clearButton'),
+                      onPressed: () {
+                        searchBarController.clearSearchQuery();
+                      },
+                      icon: const Icon(Icons.clear),
+                    )
+                  : InkWell(
+                      key: const ValueKey('logo'),
+                      onTap: () {
+                        themeController.toggleTheme();
+                      },
+                      child: ClipOval(
+                        child: SvgPicture.asset(
+                          "assets/images/group_logo.svg",
+                          height: 40,
+                          width: 40,
+                        ),
                       ),
                     ),
-                  ),
+            ),
           ),
+        ],
+        bottom: TabBar(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          controller: tabController,
+          tabs: const [
+            Text("All Chats"),
+            Text("Media"),
+            Text("Links"),
+          ],
         ),
-      ),
-    ],
-    bottom: TabBar(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      controller: tabController,
-      tabs: const [
-        Text("All Chats"),
-        Text("Media"),
-        Text("Links"),
-      ],
-    ),
-  );
+      ));
 }
