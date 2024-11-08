@@ -54,9 +54,8 @@ class _ChatScreenState extends State<ChatScreen>
     super.dispose();
   }
 
-  Future<bool> _onWillPop() async {
+  void _onPop(bool didPop, Object? result) {
     _animationController.reverse();
-    return true;
   }
 
   @override
@@ -64,8 +63,8 @@ class _ChatScreenState extends State<ChatScreen>
     final controller = Get.put(ChatController());
     final ThemeController themeController = Get.find<ThemeController>();
 
-    return WillPopScope(
-      onWillPop: _onWillPop,
+    return PopScope(
+      onPopInvokedWithResult: _onPop,
       child: Scaffold(
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(64.0),
@@ -73,7 +72,8 @@ class _ChatScreenState extends State<ChatScreen>
             position: _appBarAnimation,
             child: _buildAppBar(
               context,
-              themeController.primaryColor,
+              controller,
+              themeController,
               _animationController,
             ),
           ),
@@ -168,13 +168,14 @@ class _ChatScreenState extends State<ChatScreen>
 
 AppBar _buildAppBar(
   BuildContext context,
-  Color primaryColor,
+  ChatController controller,
+  ThemeController themeController,
   AnimationController animationController,
 ) {
   return AppBar(
     flexibleSpace: Container(
       decoration: BoxDecoration(
-        color: primaryColor,
+        color: themeController.primaryColor,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.4),
@@ -186,50 +187,113 @@ AppBar _buildAppBar(
     ),
     leading: IconButton(
       onPressed: () {
-        animationController.reverse();
-        Get.back();
+        if (controller.isSearching.value) {
+          controller.toggleSearch();
+        } else {
+          animationController.reverse();
+          Get.back();
+        }
       },
       icon: const Icon(Icons.arrow_back_ios_new),
     ),
-    title: GestureDetector(
-      onTap: () {
-        Get.toNamed('/chatDetails');
-      },
-      child: Row(
-        children: [
-          ClipOval(
-            child: SvgPicture.asset(
-              "assets/images/group_logo.svg",
-              height: 40,
-              width: 40,
-            ),
-          ),
-          const SizedBox(width: 15),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                EllipsisText(
-                  text: "House of Geeks - 1st Year",
-                  textStyle: Theme.of(context).textTheme.titleMedium,
+    title: Obx(
+      () => (controller.isSearching.value)
+          ? AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              transitionBuilder: (Widget child, Animation<double> animation) {
+                return SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(-1.0, 0),
+                    end: const Offset(0, 0),
+                  ).animate(animation),
+                  child: FadeTransition(opacity: animation, child: child),
+                );
+              },
+              child: TextField(
+                key: const ValueKey('searchBar'),
+                controller: controller.searchController,
+                cursorColor: themeController.secondaryTextColor,
+                autofocus: true,
+                decoration: const InputDecoration(
+                  hintText: 'Search...',
+                  border: InputBorder.none,
+                  focusedBorder: InputBorder.none,
                 ),
-                EllipsisText(
-                  text:
-                      "House of Geek is the technical society of Indian Institute of Information Technology, Ranchi. Lorem ipsum dolor si amet...",
-                  textStyle: Theme.of(context).textTheme.bodySmall,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            )
+          : AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              transitionBuilder: (Widget child, Animation<double> animation) {
+                return SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(-1, 0),
+                    end: const Offset(0, 0),
+                  ).animate(animation),
+                  child: FadeTransition(opacity: animation, child: child),
+                );
+              },
+              child: GestureDetector(
+                onTap: () {
+                  Get.toNamed('/chatDetails');
+                },
+                child: Row(
+                  children: [
+                    ClipOval(
+                      child: SvgPicture.asset(
+                        "assets/images/group_logo.svg",
+                        height: 40,
+                        width: 40,
+                      ),
+                    ),
+                    const SizedBox(width: 15),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          EllipsisText(
+                            text: "House of Geeks - 1st Year",
+                            textStyle: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          EllipsisText(
+                            text:
+                                "House of Geek is the technical society of Indian Institute of Information Technology, Ranchi. Lorem ipsum dolor si amet...",
+                            textStyle: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ],
-      ),
     ),
     actions: [
-      IconButton(
-        onPressed: () {
-          // Handle search action
-        },
-        icon: const Icon(Icons.search),
+      Obx(
+        () => AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          transitionBuilder: (Widget child, Animation<double> animation) {
+            return RotationTransition(
+              turns: Tween<double>(begin: 0.5, end: 1.0).animate(animation),
+              child: FadeTransition(opacity: animation, child: child),
+            );
+          },
+          child: (controller.isSearching.value)
+              ? IconButton(
+                  key: const ValueKey('clearButton'),
+                  onPressed: () {
+                    controller.clearSearchQuery();
+                  },
+                  icon: const Icon(Icons.clear),
+                )
+              : IconButton(
+                  onPressed: () {
+                    // Handle search action
+                    controller.toggleSearch();
+                  },
+                  icon: const Icon(Icons.search),
+                ),
+        ),
       ),
     ],
   );

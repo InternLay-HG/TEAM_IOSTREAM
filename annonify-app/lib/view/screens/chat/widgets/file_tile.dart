@@ -1,4 +1,3 @@
-import 'package:annonify/configs/Theme/colors.dart';
 import 'package:annonify/controller/app/theme_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

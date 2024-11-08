@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 
 import 'package:annonify/configs/Theme/colors.dart';
 import 'package:annonify/controller/app/avatar_controller.dart';

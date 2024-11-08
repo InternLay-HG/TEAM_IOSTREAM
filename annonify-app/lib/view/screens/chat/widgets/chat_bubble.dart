@@ -43,7 +43,7 @@ class ReceiveMessage extends StatelessWidget {
 
     final messageTextGroup = Flexible(
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           CustomPaint(
@@ -73,10 +73,9 @@ class ReceiveMessage extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(right: 50, left: 18, top: 5, bottom: 5),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          // (sender)?
           _avatar(avatarController),
           const SizedBox(width: 10),
           messageTextGroup,

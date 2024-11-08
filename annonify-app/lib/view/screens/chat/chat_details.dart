@@ -1,4 +1,3 @@
-import 'package:annonify/configs/Theme/colors.dart';
 import 'package:annonify/controller/app/theme_controller.dart';
 import 'package:annonify/view/Widgets/ellipsis_text.dart';
 import 'package:annonify/view/screens/chat/widgets/file_tile.dart';
@@ -45,9 +44,8 @@ class _ChatDetailsState extends State<ChatDetails>
     super.dispose();
   }
 
-  Future<bool> _onWillPop() async {
+  void _onPop(bool didPop, Object? result) {
     _animationController.reverse();
-    return true;
   }
 
   @override
@@ -55,8 +53,8 @@ class _ChatDetailsState extends State<ChatDetails>
     final ThemeController themeController = Get.find<ThemeController>();
 
     return SafeArea(
-      child: WillPopScope(
-        onWillPop: _onWillPop,
+      child: PopScope(
+        onPopInvokedWithResult: _onPop,
         child: Scaffold(
           body: CustomScrollView(
             slivers: [
@@ -362,7 +360,7 @@ Widget _buildDocuments(BuildContext context) {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
-          return FileTile(
+          return const FileTile(
             title: "Introduction to UI UX",
           );
         },
@@ -402,7 +400,7 @@ Widget _buildLinks(BuildContext context) {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
-          return FileTile(
+          return const FileTile(
             link: true,
             title: "Codechef Starters",
             subTitle: "www.codechef.com",
