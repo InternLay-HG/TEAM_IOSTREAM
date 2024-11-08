@@ -59,15 +59,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  Future<bool> _onWillPop() async {
+  void _onPop(bool didPop, Object? result) {
     _animationController.reverse();
-    return true;
   }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: _onWillPop,
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: _onPop,
       child: Scaffold(
         appBar: _buildAppBar(context, _tabController, _searchBarController),
         body: SlideTransition(
