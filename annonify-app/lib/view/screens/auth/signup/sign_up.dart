@@ -30,7 +30,7 @@ class SignUpPage extends StatelessWidget {
                       style: Theme.of(context).textTheme.displayMedium,
                     ),
                     const SizedBox(height: 20),
-                    SignUpForm(),
+                    const SignUpForm(),
                   ],
                 ),
               ),

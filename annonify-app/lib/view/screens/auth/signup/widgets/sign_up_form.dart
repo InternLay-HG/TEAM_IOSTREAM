@@ -1,4 +1,3 @@
-import 'package:annonify/configs/Theme/colors.dart';
 import 'package:annonify/controller/auth/sign_up_controller.dart';
 import 'package:annonify/controller/app/theme_controller.dart';
 import 'package:annonify/utils/validator/validator.dart';

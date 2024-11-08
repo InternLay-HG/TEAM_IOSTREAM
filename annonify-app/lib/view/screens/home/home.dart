@@ -66,7 +66,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: true,
       onPopInvokedWithResult: _onPop,
       child: Scaffold(
         appBar: _buildAppBar(context, _tabController, _searchBarController),

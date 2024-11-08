@@ -64,7 +64,6 @@ class _ChatScreenState extends State<ChatScreen>
     final ThemeController themeController = Get.find<ThemeController>();
 
     return PopScope(
-      canPop: true,
       onPopInvokedWithResult: _onPop,
       child: Scaffold(
         appBar: PreferredSize(
