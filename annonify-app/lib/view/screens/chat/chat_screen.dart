@@ -25,7 +25,7 @@ class _ChatScreenState extends State<ChatScreen>
     super.initState();
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 300),
     );
 
     _appBarAnimation = Tween<Offset>(
@@ -37,7 +37,7 @@ class _ChatScreenState extends State<ChatScreen>
     ));
 
     _bodyAnimation = Tween<Offset>(
-      begin: const Offset(0, -1), // Slide down from top for Body
+      begin: const Offset(0, -0.8), // Slide down from top for Body
       end: Offset.zero,
     ).animate(CurvedAnimation(
       parent: _animationController,
