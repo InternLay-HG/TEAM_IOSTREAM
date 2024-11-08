@@ -27,4 +27,4 @@ share similar interests or experiences.
 #### 6.1 Web : <a href="https://www.figma.com/design/4AjGXuaH6dpzJcJbfliZEY/Annonify-Web?node-id=0-1&t=51sJGV86eBme3Reu-1"> Annonify-Web </a>
 #### 6.2 App : <a href="https://www.figma.com/design/BF7PV6eROzhonY6XZ69Qs3/Annonify-Phone?node-id=0-1&t=B2T2wyL0rvZScP1C-1"> Annonify-Phone </a>
 ## 7. WEBSITE DEPLOYED :-
-#### 7.1 Link: https://internlaydeployed-pabwz87l4-anshu-kumars-projects-3d575ce3.vercel.app/
+#### 7.1 Link: http://internlaydeployed.vercel.app
