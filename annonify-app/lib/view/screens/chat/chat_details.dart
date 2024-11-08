@@ -45,9 +45,8 @@ class _ChatDetailsState extends State<ChatDetails>
     super.dispose();
   }
 
-  Future<bool> _onWillPop() async {
+  void _onPop(bool didPop, Object? result) {
     _animationController.reverse();
-    return true;
   }
 
   @override
@@ -55,8 +54,9 @@ class _ChatDetailsState extends State<ChatDetails>
     final ThemeController themeController = Get.find<ThemeController>();
 
     return SafeArea(
-      child: WillPopScope(
-        onWillPop: _onWillPop,
+      child: PopScope(
+        canPop: true,
+        onPopInvokedWithResult: _onPop,
         child: Scaffold(
           body: CustomScrollView(
             slivers: [

@@ -54,9 +54,8 @@ class _ChatScreenState extends State<ChatScreen>
     super.dispose();
   }
 
-  Future<bool> _onWillPop() async {
+  void _onPop(bool didPop, Object? result) {
     _animationController.reverse();
-    return true;
   }
 
   @override
@@ -64,8 +63,9 @@ class _ChatScreenState extends State<ChatScreen>
     final controller = Get.put(ChatController());
     final ThemeController themeController = Get.find<ThemeController>();
 
-    return WillPopScope(
-      onWillPop: _onWillPop,
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: _onPop,
       child: Scaffold(
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(64.0),
