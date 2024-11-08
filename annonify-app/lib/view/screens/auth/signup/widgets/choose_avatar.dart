@@ -46,10 +46,12 @@ class ChooseAvatar extends StatelessWidget {
 
                       return InkWell(
                         onTap: () {
-                          print(avatar.name);
+                          print("indfia:${avatar.name}");
                         },
                         child: avatar.svgData != null
-                            ? SvgPicture.string(avatar.svgData!)
+                            ? SvgPicture.string((avatar.svgData)!.replaceAll(
+                                RegExp(r'<metadata[^>]*>(.|\n)*?<\/metadata>'),
+                                ''))
                             : const CircularProgressIndicator(),
                       );
                     },

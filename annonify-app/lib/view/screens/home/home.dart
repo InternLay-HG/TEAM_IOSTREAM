@@ -78,7 +78,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   Get.find<ThemeController>();
 
               return Container(
-                padding: const EdgeInsets.only(top: 30, left: 22, right: 22),
+                padding: const EdgeInsets.only(top: 40, left: 22, right: 22),
                 decoration: BoxDecoration(
                   color: themeController.contentBG,
                   borderRadius: const BorderRadius.only(
@@ -175,36 +175,39 @@ AppBar _buildAppBar(BuildContext context, TabController tabController,
       ),
     ),
     actions: [
-      Obx(
-        () => AnimatedSwitcher(
-          duration: const Duration(milliseconds: 300),
-          transitionBuilder: (Widget child, Animation<double> animation) {
-            return RotationTransition(
-              turns: Tween<double>(begin: 0.5, end: 1.0).animate(animation),
-              child: FadeTransition(opacity: animation, child: child),
-            );
-          },
-          child: searchBarController.isSearching.value
-              ? IconButton(
-                  key: const ValueKey('clearButton'),
-                  onPressed: () {
-                    searchBarController.clearSearchQuery();
-                  },
-                  icon: const Icon(Icons.clear),
-                )
-              : InkWell(
-                  key: const ValueKey('logo'),
-                  onTap: () {
-                    themeController.toggleTheme();
-                  },
-                  child: ClipOval(
-                    child: SvgPicture.asset(
-                      "assets/images/group_logo.svg",
-                      height: 40,
-                      width: 40,
+      Padding(
+        padding: const EdgeInsets.only(right: 10),
+        child: Obx(
+          () => AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            transitionBuilder: (Widget child, Animation<double> animation) {
+              return RotationTransition(
+                turns: Tween<double>(begin: 0.5, end: 1.0).animate(animation),
+                child: FadeTransition(opacity: animation, child: child),
+              );
+            },
+            child: searchBarController.isSearching.value
+                ? IconButton(
+                    key: const ValueKey('clearButton'),
+                    onPressed: () {
+                      searchBarController.clearSearchQuery();
+                    },
+                    icon: const Icon(Icons.clear),
+                  )
+                : InkWell(
+                    key: const ValueKey('logo'),
+                    onTap: () {
+                      themeController.toggleTheme();
+                    },
+                    child: ClipOval(
+                      child: SvgPicture.asset(
+                        "assets/images/group_logo.svg",
+                        height: 40,
+                        width: 40,
+                      ),
                     ),
                   ),
-                ),
+          ),
         ),
       ),
     ],
