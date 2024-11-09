@@ -12,7 +12,7 @@ function ChatDetails({ chat }) {
     >
       {chat ? (
         <>
-          <h2 className="text-white text-lg font-semibold font-roboto-mono">
+          <h2 className="text-blue-500 text-lg font-semibold font-roboto-mono">
             {chat.name} Details
           </h2>
           <div className="flex space-x-6 text-gray-400">
@@ -23,7 +23,7 @@ function ChatDetails({ chat }) {
             {chat.description || "No description available for this chat."}
           </p>
           <div className="w-full">
-            <h3 className="text-white text-sm font-semibold mb-2 font-roboto-mono text-center">
+            <h3 className="text-blue-500 text-sm font-semibold mb-2 font-roboto-mono text-center">
               Photos and Videos
             </h3>
             <div className="flex justify-center space-x-2 overflow-x-auto">
@@ -33,7 +33,7 @@ function ChatDetails({ chat }) {
             </div>
           </div>
           <div className="w-full">
-            <h3 className="text-white text-sm font-semibold mb-2 font-roboto-mono text-center">
+            <h3 className="text-blue-500 text-sm font-semibold mb-2 font-roboto-mono text-center">
               Shared Documents
             </h3>
             <div className="space-y-2 text-gray-400">
@@ -46,7 +46,7 @@ function ChatDetails({ chat }) {
             </div>
           </div>
           <div className="w-full">
-            <h3 className="text-white text-sm font-semibold mb-2 font-roboto-mono text-center">
+            <h3 className="text-blue-500 text-sm font-semibold mb-2 font-roboto-mono text-center">
               Shared Links
             </h3>
             <div className="space-y-2 text-gray-400">
