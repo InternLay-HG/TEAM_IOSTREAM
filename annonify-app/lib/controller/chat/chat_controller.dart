@@ -5,8 +5,8 @@ class ChatController extends GetxController {
   final TextEditingController messageController = TextEditingController();
 
   final RxBool isSearching = false.obs;
-  final RxString searchQuery = "".obs;
   final TextEditingController searchController = TextEditingController();
+  final RxString searchQuery = "".obs;
 
   void toggleSearch() {
     isSearching.value = !isSearching.value;
