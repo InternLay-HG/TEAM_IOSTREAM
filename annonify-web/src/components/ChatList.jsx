@@ -33,7 +33,7 @@ function ChatList({ onSelectChat }) {
             <img
               src={`https://via.placeholder.com/50?text=User+${chat.id + 1}`}
               alt={`User ${chat.id + 1}`}
-              className="w-10 h-10 rounded-full"
+              className="w-12 h-12 rounded-lg"
             />
             <div className="ml-4">
               <h4 className="text-white font-semibold font-roboto-mono">{chat.name}</h4>
