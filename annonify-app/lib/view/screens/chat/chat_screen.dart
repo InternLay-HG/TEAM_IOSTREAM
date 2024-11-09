@@ -1,4 +1,5 @@
 import 'package:annonify/configs/Theme/colors.dart';
+import 'package:annonify/controller/app/avatar_controller.dart';
 import 'package:annonify/controller/chat/chat_controller.dart';
 import 'package:annonify/controller/app/theme_controller.dart';
 import 'package:annonify/view/Widgets/ellipsis_text.dart';
@@ -239,13 +240,7 @@ AppBar _buildAppBar(
                 },
                 child: Row(
                   children: [
-                    ClipOval(
-                      child: SvgPicture.asset(
-                        "assets/images/group_logo.svg",
-                        height: 40,
-                        width: 40,
-                      ),
-                    ),
+                    _avatar(),
                     const SizedBox(width: 15),
                     Expanded(
                       child: Column(
@@ -297,4 +292,16 @@ AppBar _buildAppBar(
       ),
     ],
   );
+}
+
+Widget _avatar() {
+  return Obx(() {
+    AvatarController avatarController = Get.find<AvatarController>();
+    return CircleAvatar(
+      backgroundColor: Colors.white,
+      child: avatarController.avatars[0].svgData != null
+          ? SvgPicture.string(avatarController.avatars[0].svgData!)
+          : SvgPicture.asset("assets/images/group_logo.svg"),
+    );
+  });
 }

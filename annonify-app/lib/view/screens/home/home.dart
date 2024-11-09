@@ -210,14 +210,8 @@ Widget _buildAppBar(BuildContext context, TabController tabController,
 Widget _avatar() {
   return Obx(() {
     AvatarController avatarController = Get.find<AvatarController>();
-    return Container(
-      height: 40,
-      width: 40,
-      decoration: const BoxDecoration(
-          color: LightThemeColors.contentBG,
-          borderRadius: BorderRadius.all(
-            Radius.circular(8),
-          )),
+    return CircleAvatar(
+      backgroundColor: Colors.white,
       child: avatarController.avatars[0].svgData != null
           ? SvgPicture.string(avatarController.avatars[0].svgData!)
           : SvgPicture.asset("assets/images/group_logo.svg"),

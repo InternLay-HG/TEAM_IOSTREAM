@@ -1,3 +1,5 @@
+import 'package:annonify/configs/Theme/colors.dart';
+import 'package:annonify/controller/app/avatar_controller.dart';
 import 'package:annonify/controller/app/theme_controller.dart';
 import 'package:annonify/view/Widgets/ellipsis_text.dart';
 import 'package:annonify/view/screens/chat/widgets/file_tile.dart';
@@ -104,6 +106,8 @@ class SliverPersistentDelegate extends SliverPersistentHeaderDelegate {
   final double maxImageSize = 86;
   final double minImageSize = 40;
 
+  AvatarController avatarController = Get.find<AvatarController>();
+
   final AnimationController animationController;
 
   SliverPersistentDelegate(this.animationController);
@@ -203,11 +207,24 @@ class SliverPersistentDelegate extends SliverPersistentHeaderDelegate {
                 children: [
                   Row(
                     children: [
-                      SvgPicture.asset(
-                        "assets/images/group_logo.svg",
-                        width: currentImageSize,
+                      Container(
                         height: currentImageSize,
+                        width: currentImageSize,
+                        decoration: const BoxDecoration(
+                            color: LightThemeColors.contentBG,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            )),
+                        child: avatarController.avatars[0].svgData != null
+                            ? SvgPicture.string(
+                                avatarController.avatars[0].svgData!)
+                            : SvgPicture.asset("assets/images/group_logo.svg"),
                       ),
+                      // SvgPicture.asset(
+                      //   "assets/images/group_logo.svg",
+                      //   width: currentImageSize,
+                      //   height: currentImageSize,
+                      // ),
                       Visibility(
                         visible: (1 - percent2) > 0.9,
                         child: SizedBox(
