@@ -25,7 +25,6 @@ const io = socketIo(server, { cors: { origin: '*' } });
 io.on('connection', (socket) => {
   console.log('New client connected');
 
-  // Join all available groups
   socket.on('joinAllGroups', async () => {
     const groups = await Group.find({});
     groups.forEach(group => {
@@ -34,7 +33,6 @@ io.on('connection', (socket) => {
     socket.emit('groupsJoined', groups);
   });
 
-  // Handle new message
   socket.on('sendMessage', async ({ userId, group, content }) => {
     const message = new Message({ user: userId, group, content });
     await message.save();
