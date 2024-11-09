@@ -1,6 +1,8 @@
 import 'package:annonify/configs/Theme/colors.dart';
+import 'package:annonify/controller/app/avatar_controller.dart';
 import 'package:annonify/controller/app/search_bar_controller.dart';
 import 'package:annonify/controller/app/theme_controller.dart';
+import 'package:annonify/models/avatar.dart';
 import 'package:annonify/view/Screens/Home/all_chats.dart';
 import 'package:annonify/view/Screens/Home/links.dart';
 import 'package:annonify/view/Screens/Home/media.dart';
@@ -188,13 +190,7 @@ Widget _buildAppBar(BuildContext context, TabController tabController,
                       onTap: () {
                         themeController.toggleTheme();
                       },
-                      child: ClipOval(
-                        child: SvgPicture.asset(
-                          "assets/images/group_logo.svg",
-                          height: 40,
-                          width: 40,
-                        ),
-                      ),
+                      child: _avatar(),
                     ),
             ),
           ),
@@ -209,4 +205,22 @@ Widget _buildAppBar(BuildContext context, TabController tabController,
           ],
         ),
       ));
+}
+
+Widget _avatar() {
+  return Obx(() {
+    AvatarController avatarController = Get.find<AvatarController>();
+    return Container(
+      height: 40,
+      width: 40,
+      decoration: const BoxDecoration(
+          color: LightThemeColors.contentBG,
+          borderRadius: BorderRadius.all(
+            Radius.circular(8),
+          )),
+      child: avatarController.avatars[0].svgData != null
+          ? SvgPicture.string(avatarController.avatars[0].svgData!)
+          : SvgPicture.asset("assets/images/group_logo.svg"),
+    );
+  });
 }
