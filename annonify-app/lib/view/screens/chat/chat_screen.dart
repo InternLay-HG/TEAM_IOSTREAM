@@ -96,7 +96,7 @@ class _ChatScreenState extends State<ChatScreen>
                       children: const [
                         SentMessage(
                             message:
-                                "nhasfjasd fgeuf gjdsas fjasd fgeufgj dsasfjas dfgeufgjd sasfj as dfge ufgjds sdfge ufgjdsa sfjasdfgeu fgjdsasfjmar  "),
+                                "fgeuf gjdsas fjasd fgeufgj dsasfjas dfgeufgjd sasfj as dfge ufgjds sdfge ufgjdsa sfjasdfgeu fgjdsasfjmar  "),
                         SizedBox(height: 10),
                         ReceiveMessage(
                             message:
