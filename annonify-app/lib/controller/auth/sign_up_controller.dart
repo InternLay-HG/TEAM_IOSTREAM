@@ -8,6 +8,7 @@ class SignUpController extends GetxController {
 
   //TextField controllers
   final TextEditingController emailController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confPassController = TextEditingController();
 
@@ -18,6 +19,7 @@ class SignUpController extends GetxController {
   @override
   void onClose() {
     emailController.dispose();
+    nameController.dispose();
     passwordController.dispose();
     confPassController.dispose();
     super.onClose();
