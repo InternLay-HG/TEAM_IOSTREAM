@@ -6,7 +6,7 @@ import { RiLink } from "react-icons/ri";
 function ChatDetails({ chat }) {
   return (
     <div
-      className={`w-[32%] h-full ${
+      className={`w-[40%] h-full ${
         chat ? "bg-[#1a1a1a]" : "bg-black"
       } text-gray-300 flex flex-col items-center p-4 space-y-8`}
     >
