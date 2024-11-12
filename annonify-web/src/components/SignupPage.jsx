@@ -1,6 +1,6 @@
 import React from "react";
-import { MdAlternateEmail, MdOutlineRemoveRedEye } from "react-icons/md";
-import image from "./info.jpg"; 
+import { MdDriveFileRenameOutline,MdAlternateEmail, MdOutlineRemoveRedEye } from "react-icons/md";
+import image from "./info.jpg";
 
 function SignupPage({ onSignup }) {
   return (
@@ -38,6 +38,16 @@ function SignupPage({ onSignup }) {
             className="input-field border-b border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 px-4 py-2 w-full bg-transparent pr-10" 
           />
           <MdOutlineRemoveRedEye className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-xl" />
+        </div>
+
+        {/* Name Input Field */}
+        <div className="relative mb-6 w-full">
+          <input 
+            type="text" 
+            placeholder="Name" 
+            className="input-field border-b border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 px-4 py-2 w-full bg-transparent" 
+          />
+          <MdDriveFileRenameOutline className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-xl" />
         </div>
 
         {/* Signup Button */}
