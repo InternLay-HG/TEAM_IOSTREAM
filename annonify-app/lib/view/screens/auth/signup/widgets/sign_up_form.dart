@@ -28,6 +28,13 @@ class SignUpForm extends StatelessWidget {
               ),
               validator: (value) => Validator.validateEmail(value),
             ),
+            TextFormField(
+              cursorColor: themeController.textHeading,
+              controller: controller.nameController,
+              decoration: const InputDecoration(
+                hintText: "Name",
+              ),
+            ),
             const SizedBox(height: 15),
             Obx(
               () => TextFormField(
@@ -92,7 +99,7 @@ class SignUpForm extends StatelessWidget {
                   onPressed: () {
                     Get.offNamed('/signin');
                   },
-                  child: const Text("LOGIN"),
+                  child: const Text("NEXT"),
                 )
               ],
             )
