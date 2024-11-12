@@ -1,18 +1,36 @@
-// ChatList.js
-import React from "react";
+import React, { useState } from "react";
 import { FaSearch } from "react-icons/fa";
+import "./ChatList.css";
 
 function ChatList({ onSelectChat }) {
-  const chatGroups = [...Array(100)].map((_, index) => ({
-    id: index,
-    name: `Chat Group - ${index + 1}`,
-    lastMessage: "Last message in chat...",
-  }));
+  const [selectedChat, setSelectedChat] = useState(null);
+
+  // List of group names
+  const chatGroups = [
+    { id: 1, name: "HOUSE OF GEEKS", lastMessage: "Last message in chat..." },
+    { id: 2, name: "SPORTS SOCIETY", lastMessage: "Last message in chat..." },
+    { id: 3, name: "HOSTEL COMMITTEE", lastMessage: "Last message in chat..." },
+    { id: 4, name: "MESS COMMITTEE", lastMessage: "Last message in chat..." },
+    { id: 5, name: "E-CELL", lastMessage: "Last message in chat..." },
+    { id: 6, name: "SAAZ", lastMessage: "Last message in chat..." },
+    { id: 7, name: "RANGBAAZ", lastMessage: "Last message in chat..." },
+    { id: 8, name: "KIRTI", lastMessage: "Last message in chat..." },
+    { id: 9, name: "CONFESSION GROUP", lastMessage: "Last message in chat..." },
+    { id: 10, name: "1ST YEAR", lastMessage: "Last message in chat..." },
+    { id: 11, name: "2ND YEAR", lastMessage: "Last message in chat..." },
+    { id: 12, name: "3RD YEAR", lastMessage: "Last message in chat..." },
+    { id: 13, name: "4TH YEAR", lastMessage: "Last message in chat..." },
+  ];
+
+  const handleSelectChat = (chat) => {
+    setSelectedChat(chat.id); // Update selected chat
+    onSelectChat(chat); // Pass the selected chat to the parent
+  };
 
   return (
-    <div className="w-[30%] h-full overflow-y-auto bg-black text-gray-400"> {/* Increased width */}
+    <div className="w-[30%] h-full overflow-y-auto bg-black text-gray-400">
       <div className="p-4">
-        <div className="relative">
+        <div className="relative mt-4">
           <input
             type="text"
             placeholder="Search"
@@ -27,12 +45,13 @@ function ChatList({ onSelectChat }) {
         {chatGroups.map((chat) => (
           <div
             key={chat.id}
-            className="flex items-center p-3 rounded hover:bg-[#1a1a1a] cursor-pointer"
-            onClick={() => onSelectChat(chat)}
+            className={`flex items-center p-4 rounded cursor-pointer min-h-[80px] 
+              ${selectedChat === chat.id ? "bg-[#1a1a1a]" : "hover:bg-[#2c2c2c]"}`}
+            onClick={() => handleSelectChat(chat)}
           >
             <img
-              src={`https://via.placeholder.com/50?text=User+${chat.id + 1}`}
-              alt={`User ${chat.id + 1}`}
+              src={`https://via.placeholder.com/50?text=User+${chat.id}`}
+              alt={`User ${chat.id}`}
               className="w-12 h-12 rounded-lg"
             />
             <div className="ml-4">
