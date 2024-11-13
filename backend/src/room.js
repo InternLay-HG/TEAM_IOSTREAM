@@ -1,27 +1,61 @@
-const availableGroups = ["a","b","c","d"];
-io.on("connection", (socket) => {
-    console.log(`User connected: ${socket.id}`);
+const Message = require('./models/message');
+const Group = require('./models/group');
+const User = require('./models/user');
 
-    // Automatically join all available groups
-    availableGroups.forEach((groupName) => {
-        socket.join(groupName);
-        console.log(`${socket.id} automatically joined group: ${groupName}`);
-    });
+module.exports = (io) => {
+    io.on("connection", async (socket) => {
+        console.log(`User connected: ${socket.id}`);
 
-    // Notify the user that they've joined the groups
-    socket.emit("joinedGroups", availableGroups);
+        
+        const userId = socket.handshake.query.userId;
 
-    // Listen for group messages
-    socket.on("groupMessage", ({ groupName, message }) => {
-        io.to(groupName).emit("newGroupMessage", {
-            sender: socket.id,
-            message: message,
-            group: groupName,
+        try {
+            const user = await User.findById(userId);
+            if (!user) {
+                console.error("User not found");
+                socket.disconnect();
+                return;
+            }
+
+            const userGroups = await Group.find({ members: userId });
+            const availableGroups = userGroups.map(group => group.name);
+
+            
+            availableGroups.forEach((groupName) => {
+                socket.join(groupName);
+                console.log(`${socket.id} joined group: ${groupName}`);
+            });
+            socket.emit("joinedGroups", availableGroups);
+        } catch (error) {
+            console.error("Error fetching user groups from MongoDB:", error);
+        }
+
+        socket.on("groupMessage", async ({ groupName, message }) => {
+            try {
+                const group = await Group.findOne({ name: groupName });
+                if (!group) {
+                    return console.error(`Group not found: ${groupName}`);
+                }
+                const newMessage = new Message({
+                    content: message,
+                    user: userId,
+                    group: group._id
+                });
+                await newMessage.save();
+
+                io.to(groupName).emit("newGroupMessage", {
+                    sender: userId,
+                    message,
+                    group: groupName,
+                    timestamp: newMessage.timestamp
+                });
+            } catch (error) {
+                console.error('Error saving message:', error);
+            }
+        });
+
+        socket.on("disconnect", () => {
+            console.log(`User disconnected: ${socket.id}`);
         });
     });
-
-    // Handle disconnect
-    socket.on("disconnect", () => {
-        console.log(`User disconnected: ${socket.id}`);
-    });
-});
+};
