@@ -1,0 +1,25 @@
+/* Apply to scrollable containers */
+.scrollable {
+  height: calc(100vh - 100px); /* Subtract header/footer height (example: 100px) */
+  overflow-y: auto;
+}
+
+/* Alternatively, use max-height if elements need flexibility */
+.scrollable {
+  max-height: 90vh; /* 90% of viewport height */
+  overflow-y: auto;
+}
+
+/* Your custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(209, 213, 219, 0.5); /* Adjust opacity as needed */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
