@@ -2,6 +2,7 @@ import 'package:annonify/configs/Theme/colors.dart';
 import 'package:annonify/controller/app/avatar_controller.dart';
 import 'package:annonify/controller/chat/chat_controller.dart';
 import 'package:annonify/controller/app/theme_controller.dart';
+import 'package:annonify/models/group_model.dart';
 import 'package:annonify/view/Widgets/ellipsis_text.dart';
 import 'package:annonify/view/screens/chat/widgets/chat_bubble.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,8 @@ class _ChatScreenState extends State<ChatScreen>
   late AnimationController _animationController;
   late Animation<Offset> _appBarAnimation;
   late Animation<Offset> _bodyAnimation;
+
+  final Group group = Get.arguments;
 
   @override
   void initState() {
@@ -76,6 +79,7 @@ class _ChatScreenState extends State<ChatScreen>
               controller,
               themeController,
               _animationController,
+              group,
             ),
           ),
         ),
@@ -172,6 +176,7 @@ AppBar _buildAppBar(
   ChatController controller,
   ThemeController themeController,
   AnimationController animationController,
+  Group group,
 ) {
   return AppBar(
     flexibleSpace: Container(
@@ -236,7 +241,7 @@ AppBar _buildAppBar(
               },
               child: GestureDetector(
                 onTap: () {
-                  Get.toNamed('/chatDetails');
+                  Get.toNamed('/chatDetails', arguments: group);
                 },
                 child: Row(
                   children: [
@@ -247,12 +252,11 @@ AppBar _buildAppBar(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           EllipsisText(
-                            text: "House of Geeks - 1st Year",
+                            text: group.name,
                             textStyle: Theme.of(context).textTheme.titleMedium,
                           ),
                           EllipsisText(
-                            text:
-                                "House of Geek is the technical society of Indian Institute of Information Technology, Ranchi. Lorem ipsum dolor si amet...",
+                            text: group.description,
                             textStyle: Theme.of(context).textTheme.bodySmall,
                           ),
                         ],

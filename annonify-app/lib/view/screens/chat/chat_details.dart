@@ -1,6 +1,7 @@
 import 'package:annonify/configs/Theme/colors.dart';
 import 'package:annonify/controller/app/avatar_controller.dart';
 import 'package:annonify/controller/app/theme_controller.dart';
+import 'package:annonify/models/group_model.dart';
 import 'package:annonify/view/Widgets/ellipsis_text.dart';
 import 'package:annonify/view/screens/chat/widgets/file_tile.dart';
 import 'package:annonify/view/widgets/my_icon_button.dart';
@@ -19,6 +20,7 @@ class _ChatDetailsState extends State<ChatDetails>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<Offset> _bodyAnimation;
+  final Group group = Get.arguments;
 
   @override
   void initState() {
@@ -61,7 +63,7 @@ class _ChatDetailsState extends State<ChatDetails>
           body: CustomScrollView(
             slivers: [
               SliverPersistentHeader(
-                delegate: SliverPersistentDelegate(_animationController),
+                delegate: SliverPersistentDelegate(_animationController, group),
                 pinned: true,
               ),
               SliverToBoxAdapter(
@@ -109,8 +111,9 @@ class SliverPersistentDelegate extends SliverPersistentHeaderDelegate {
   AvatarController avatarController = Get.find<AvatarController>();
 
   final AnimationController animationController;
+  final Group group;
 
-  SliverPersistentDelegate(this.animationController);
+  SliverPersistentDelegate(this.animationController, this.group);
 
   @override
   Widget build(
@@ -155,12 +158,11 @@ class SliverPersistentDelegate extends SliverPersistentHeaderDelegate {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       EllipsisText(
-                        text: "House of Geeks",
+                        text: group.name,
                         textStyle: Theme.of(context).textTheme.titleMedium,
                       ),
                       EllipsisText(
-                        text:
-                            "House of Geek is the technical society of Indian Institute of Information Technology, Ranchi. Lorem ipsum dolor si  amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.",
+                        text: group.description,
                         textStyle: Theme.of(context).textTheme.bodySmall,
                       ),
                     ],
@@ -271,14 +273,14 @@ class SliverPersistentDelegate extends SliverPersistentHeaderDelegate {
                                   SizedBox(
                                     width: (size.width - 50) * 0.6,
                                     child: Text(
-                                      "House of Geeks - 1st Year",
+                                      group.name,
                                       style: Theme.of(context)
                                           .textTheme
                                           .displayLarge,
                                     ),
                                   ),
                                   Text(
-                                    "6660 members",
+                                    "60 members",
                                     style:
                                         Theme.of(context).textTheme.bodySmall,
                                   ),
@@ -286,7 +288,7 @@ class SliverPersistentDelegate extends SliverPersistentHeaderDelegate {
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                "House of Geek is the technical society of Indian Institute of Information Technology, Ranchi. Lorem ipsum dolor si amet, consectetur adipiscing elit, sed do eiusmod tempuse of Geek is the technical society of Indian Institute of Information Technology, Ranchi. Lorem ipsum dolor si amet, or rem ipsum dolor si amet, or si amet, .",
+                                group.description,
                                 style: Theme.of(context).textTheme.displaySmall,
                               ),
                             ],
