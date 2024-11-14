@@ -1,7 +1,7 @@
 const Message = require('./models/message');
 const Group = require('./models/group');
 const User = require('./models/user');
-
+const mongoose = require('mongoose')
 module.exports = (io) => {
     io.on("connection", async (socket) => {
         console.log(`User connected: ${socket.id}`);
@@ -41,8 +41,12 @@ module.exports = (io) => {
                     user: userId,
                     group: group._id
                 });
-                await newMessage.save();
+                console.log('User ID:', userId); // Log userId
+                console.log('Group ID:', group._id); // Log group ID
 
+                console.log('Saving message:', newMessage);
+                await newMessage.save();
+                console.log('Message saved:', newMessage);
                 io.to(groupName).emit("newGroupMessage", {
                     sender: userId,
                     message,

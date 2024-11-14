@@ -10,19 +10,23 @@ const {Server} = require("socket.io");
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
-// Serve static files from the public directory
-app.use(express.static('public')); // Ensure your HTML file is in the 'public' directory
+app.use(express.static('public')); 
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static('uploads'));
 app.use(passport.initialize());
+
+
 passportAuth(passport); 
 app.use('/api', apiRoutes);
 
-
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/public/index.html');
-});
+// app.get('/', (req, res) => {
+//     res.sendFile(__dirname + '/public/index.html');
+// });
 
 io.on('connection', (socket) => {
     console.log('A user connected');

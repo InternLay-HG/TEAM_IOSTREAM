@@ -4,6 +4,10 @@ const { addUserToGroup } = require('../controllers/group_controller');
 const Message = require('../models/message');
 const Group = require("../models/group");
 const passport = require("passport");
+const multer = require('multer');
+const Comment = require('../models/comment');
+const Post = require('../models/post');
+
 const router = express.Router();
 
 
@@ -43,9 +47,70 @@ router.get('/messages/:groupId', async (req, res) => {
     }
 });
 
-module.exports = router;
-
-
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+      cb(null, Date.now() + '-' + file.originalname);
+    }
+  });
+  const upload = multer({ storage: storage });
+  
+  // Post a new blog post
+  router.post('/posts', upload.single('image'), async (req, res) => {
+    try {
+      const post = new Post({
+        title: req.body.title,
+        description: req.body.description,
+        image: req.file.path,
+      });
+      await post.save();
+      res.status(201).json(post);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+  
+  // Get all blog posts
+  router.get('/posts', async (req, res) => {
+    try {
+      const posts = await Post.find().populate('comments');
+      res.status(200).json(posts);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+  
+  // Like a post
+  router.post('/posts/:id/like', async (req, res) => {
+    try {
+      const post = await Post.findById(req.params.id);
+      post.likes += 1;
+      await post.save();
+      res.status(200).json(post);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+  
+  router.post('/comments', async (req, res) => {
+    try {
+      const { content, postId } = req.body;
+      const post = await Post.findById(postId);
+      
+      const comment = new Comment({ content, postId });
+      await comment.save();
+      
+      post.comments.push(comment);
+      await post.save();
+      
+      res.status(201).json(comment);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+  
 
 router.get('/:id', getUserById);
 

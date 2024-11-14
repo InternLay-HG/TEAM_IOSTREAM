@@ -1,129 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Socket.IO Chat</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        #chat-container {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            width: 400px;
-            max-width: 90%;
-            overflow: hidden;
-        }
-
-        #messages {
-            list-style-type: none;
-            padding: 20px;
-            height: 300px;
-            overflow-y: auto;
-            border-bottom: 1px solid #ddd;
-        }
-
-        #messages li {
-            padding: 10px;
-            margin: 5px 0;
-            border-radius: 5px;
-            position: relative;
-        }
-
-        #messages li:nth-child(odd) {
-            background-color: #e9f5ff;
-        }
-
-        #messages li:nth-child(even) {
-            background-color: #f1f1f1;
-        }
-
-        #message-form {
-            display: flex;
-            padding: 10px;
-            background: #f9f9f9;
-        }
-
-        #message-input {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin-right: 10px;
-            font-size: 16px;
-        }
-
-        #send-button {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            background-color: #007bff;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        #send-button:hover {
-            background-color: #0056b3;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 500px) {
-            #chat-container {
-                width: 100%;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog App</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="chat-container">
-        <h1>Chat Room</h1>
-        <ul id="messages"></ul>
-        <form id="message-form" onsubmit="return sendMessage();">
-            <input id="message-input" autocomplete="off" placeholder="Type your message..." />
-            <button id="send-button" type="submit"><i class="fas fa-paper-plane"></i> Send</button>
-        </form>
-    </div>
 
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
-        const socket = io();
+  <h1>Blog App</h1>
+  <form id="postForm" enctype="multipart/form-data">
+    <input type="text" id="title" placeholder="Title" required>
+    <textarea id="description" placeholder="Description" required></textarea>
+    <input type="file" id="image" required>
+    <button type="submit">Post</button>
+  </form>
 
-        function sendMessage() {
-            const messageInput = document.getElementById('message-input');
-            const message = messageInput.value;
-            if (message.trim() !== '') {
-                socket.emit('chat message', message);
-                messageInput.value = '';
-            }
-            return false; // Prevent form submission
-        }
+  <div id="posts"></div>
 
-        socket.on('chat message', function(msg) {
-            const messages = document.getElementById('messages');
-            const messageElement = document.createElement('li');
-            messageElement.textContent = msg;
-            messages.appendChild(messageElement);
-            messages.scrollTop = messages.scrollHeight; // Auto-scroll to the bottom
+  <script>
+    document.getElementById('postForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData();
+      formData.append('title', document.getElementById('title').value);
+      formData.append('description', document.getElementById('description').value);
+      formData.append('image', document.getElementById('image').files[0]);
+
+      const response = await fetch('/api/posts', {
+        method: 'POST',
+        body: formData
+      });
+
+      const post = await response.json();
+      loadPosts(); // Reload posts after adding a new one
+    });
+
+    async function loadPosts() {
+      const response = await fetch('/api/posts');
+      const posts = await response.json();
+      const postsContainer = document.getElementById('posts');
+      postsContainer.innerHTML = '';
+      posts.forEach(post => {
+        const postElement = document.createElement('div');
+        postElement.innerHTML = `
+          <h3>${post.title}</h3>
+          <p>${post.description}</p>
+          <img src="/${post.image}" alt="Post Image">
+          <button onclick="likePost('${post._id}')">Like (${post.likes})</button>
+          <form onsubmit="postComment(event, '${post._id}')">
+            <input type="text" placeholder="Add a comment" required>
+            <button type="submit">Comment</button>
+          </form>
+          <div id="comments-${post._id}"></div>
+        `;
+        postsContainer.appendChild(postElement);
+
+        // Load comments for the post
+        post.comments.forEach(comment => {
+          const commentElement = document.createElement('div');
+          commentElement.textContent = comment.content;
+          document.getElementById(`comments-${post._id}`).appendChild(commentElement);
         });
-    </script>
+      });
+    }
+
+    async function likePost(postId) {
+      await fetch(`/api/posts/${postId}/like`, { method: 'POST' });
+      loadPosts(); // Reload posts after liking
+    }
+
+    async function postComment(event, postId) {
+      event.preventDefault();
+      const commentContent = event.target.querySelector('input').value;
+      
+      await fetch('/api/comments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: commentContent, postId })
+      });
+
+      loadPosts(); // Reload posts after commenting
+    }
+
+    // Initial load
+    loadPosts();
+  </script>
 </body>
 </html>
