@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const http = require('http');
 const path = require('path'); // Make sure to import path
 const { connect } = require('./config/database'); // Assuming you have a database connection function
@@ -8,6 +9,10 @@ const apiRoutes = require('./routes/auth-routes');
 const {Server} = require("socket.io");
 
 const app = express();
+app.use(cors({
+    origin: 'http://localhost:3000', // Allow only your frontend's origin
+  }));
+
 const server = http.createServer(app);
 const io = new Server(server);
 app.use(express.static('public')); 
