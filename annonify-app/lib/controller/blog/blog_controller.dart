@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
-
+import 'package:http/http.dart' as http;
 import 'package:annonify/models/blog/post_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 
 class BlogController extends GetxController {
@@ -45,15 +47,49 @@ class BlogController extends GetxController {
     }
   }
 
-  void addBlog() {
-    posts.add(PostModel(
-      name: "User",
-      postTitle: titleController.text,
-      postBody: bodyController.text,
-      image: selectedImage.value,
-    ));
+  Future<void> addBlog() async {
+    final Map<String, String> body = {
+      "title": titleController.text,
+      "description": bodyController.text,
+    };
+    var request = http.MultipartRequest('POST', Uri.parse('$server/posts'));
 
-    clearFields();
+    try {
+      request.fields.addAll(body);
+      if (selectedImage.value != null) {
+        String contentType = 'image/jpeg'; // Default to JPEG
+        final extension =
+            selectedImage.value!.path.split('.').last.toLowerCase();
+        if (extension == 'png') contentType = 'image/png';
+
+        request.files.add(await http.MultipartFile.fromPath(
+          'image',
+          selectedImage.value!.path,
+          contentType: MediaType('image', extension),
+        ));
+      }
+
+      var response = await request.send();
+      // Handle multipart response body
+      final responseBody = await response.stream.bytesToString();
+
+      if (response.statusCode == 201) {
+        final responseData = json.decode(responseBody);
+        posts.add(PostModel(
+          name: "User",
+          postTitle: titleController.text,
+          postBody: bodyController.text,
+          image: selectedImage.value,
+        ));
+        Get.snackbar("Success", "Blog added!");
+        clearFields();
+      } else {
+        final error = json.decode(responseBody);
+        Get.snackbar("Error", error['message'] ?? "failed");
+      }
+    } catch (error) {
+      Get.snackbar("Error", "Something went wrong. Please try again.");
+    }
   }
 
   void like(PostModel post) {
