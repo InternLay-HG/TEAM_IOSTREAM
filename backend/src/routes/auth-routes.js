@@ -39,8 +39,8 @@ router.post("/join-group/:groupId", passport.authenticate("jwt", { session: fals
 router.get('/groups/:userId', async (req, res) => {
   try {
       const groups = await Group.find({ members: req.params.userId })
-          .select('name description') // Include only necessary fields
-          .sort('name'); // Optionally sort by group name
+          .select('name description') 
+          .sort('name'); 
 
       res.json(groups);
   } catch (error) {
