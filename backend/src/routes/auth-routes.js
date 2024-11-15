@@ -36,6 +36,19 @@ router.post("/join-group/:groupId", passport.authenticate("jwt", { session: fals
     }
 });
 
+router.get('/groups/:userId', async (req, res) => {
+  try {
+      const groups = await Group.find({ members: req.params.userId })
+          .select('name description') // Include only necessary fields
+          .sort('name'); // Optionally sort by group name
+
+      res.json(groups);
+  } catch (error) {
+      console.error('Error fetching user groups:', error);
+      res.status(500).json({ error: 'Error fetching user groups' });
+  }
+});
+
 router.get('/messages/:groupId', async (req, res) => {
     try {
         const messages = await Message.find({ group: req.params.groupId })
