@@ -1,9 +1,6 @@
-import 'dart:io';
-
 import 'package:annonify/view/screens/home/blog/blogs.dart';
 import 'package:annonify/view/screens/home/chats/all_chats.dart';
 import 'package:annonify/view/screens/home/links/links.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

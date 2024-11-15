@@ -58,7 +58,10 @@ class AddBlogDialog extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Get.back();
+                controller.addBlog();
+              },
               child: const Text("Add Blog"),
             ),
           ],

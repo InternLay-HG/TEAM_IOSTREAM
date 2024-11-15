@@ -1,7 +1,10 @@
+import 'dart:io';
+
+
 class PostModel {
   String? avatar;
   String name;
-  String? image;
+  File? image;
   String? postTitle;
   String? postBody;
   int likes;

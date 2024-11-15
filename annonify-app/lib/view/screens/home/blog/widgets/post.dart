@@ -1,4 +1,5 @@
-import 'package:annonify/controller/app/avatar_controller.dart';
+import 'dart:io';
+
 import 'package:annonify/controller/app/theme_controller.dart';
 import 'package:annonify/models/blog/post_model.dart';
 import 'package:annonify/view/screens/home/blog/widgets/post_button.dart';
@@ -39,8 +40,10 @@ class Post extends StatelessWidget {
             ),
             const SizedBox(height: 10),
 
-            // Post Text
+            //Post Image
+            if(post.image!=null)Image.file(File(post.image!.path.toString())),
 
+            // Post Text
             const SizedBox(height: 10),
             if (post.postTitle != null)
               Text(

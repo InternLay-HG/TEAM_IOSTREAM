@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:annonify/models/blog/post_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -7,7 +8,24 @@ import 'package:image_picker/image_picker.dart';
 class BlogController extends GetxController {
   static BlogController get instance => Get.find();
 
-  //Add blog
+  final RxList<PostModel> posts = [
+    PostModel(
+      // avatar: avatarController.avatars[0].svgData,
+      name: "house of Geeks",
+      postTitle: "Happy Diwali to all IIITians",
+      postBody:
+      "While we’re busy debugging code and breaking things in production, Diwali arrives to remind us that not all lights are errors! 💡🎇 Let’s celebrate this festival with fewer bugs and more brightness (literally). May your code run without exceptions, and your projects compile with 0 warnings!  Happy Diwali from the sleep-deprived but ever-enthusiastic House of Geeks",
+    ),
+    PostModel(
+      // avatar: avatarController.avatars[0].svgData,
+      name: "house of Geeks",
+      postTitle: "Happy Diwali to all IIITians",
+      postBody:
+      "While we’re busy debugging code and breaking things in production, Diwali arrives to remind us that not all lights are errors! 💡🎇 Let’s celebrate this festival with fewer bugs and more brightness (literally). May your code run without exceptions, and your projects compile with 0 warnings!Happy Diwali from the sleep-deprived but ever-enthusiastic House of Geeks",
+    )
+  ].obs;
+
+  ////Add blog
   final TextEditingController titleController = TextEditingController();
   final TextEditingController bodyController = TextEditingController();
   var selectedImage = Rxn<File>();
@@ -19,8 +37,20 @@ class BlogController extends GetxController {
     if (image != null) {
       selectedImage.value = File(image.path);
     } else {
+      clearFields();
       Get.snackbar("No Image Selected", "Please select an image.");
     }
+  }
+
+  void addBlog(){
+    posts.add(PostModel(
+      name: "User", // Replace with dynamic username if available
+      postTitle: titleController.text,
+      postBody: bodyController.text,
+      // Convert the image to an appropriate format or store the file path
+      image: selectedImage.value,
+    ));
+    clearFields();
   }
 
   void clearFields() {
