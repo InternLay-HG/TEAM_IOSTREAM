@@ -2,10 +2,9 @@ import 'package:annonify/configs/Theme/colors.dart';
 import 'package:annonify/controller/app/avatar_controller.dart';
 import 'package:annonify/controller/app/search_bar_controller.dart';
 import 'package:annonify/controller/app/theme_controller.dart';
-import 'package:annonify/models/avatar.dart';
-import 'package:annonify/view/Screens/Home/all_chats.dart';
-import 'package:annonify/view/Screens/Home/links.dart';
-import 'package:annonify/view/Screens/Home/media.dart';
+import 'package:annonify/view/screens/home/blog/blogs.dart';
+import 'package:annonify/view/screens/home/chats/all_chats.dart';
+import 'package:annonify/view/screens/home/links/links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -73,7 +72,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   Get.find<ThemeController>();
 
               return Container(
-                padding: const EdgeInsets.only(top: 40, left: 22, right: 22),
+                // padding: const EdgeInsets.only(top: 40, left: 22, right: 22),
+                padding: const EdgeInsets.only(top: 40, left: 10, right: 10),
                 decoration: BoxDecoration(
                   color: themeController.contentBG,
                   borderRadius: const BorderRadius.only(
@@ -85,7 +85,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   controller: _tabController,
                   children: const [
                     AllChats(),
-                    Media(),
+                    Blogs(),
                     Links(),
                   ],
                 ),
@@ -200,7 +200,7 @@ Widget _buildAppBar(BuildContext context, TabController tabController,
           controller: tabController,
           tabs: const [
             Text("All Chats"),
-            Text("Media"),
+            Text("Blogs"),
             Text("Links"),
           ],
         ),
@@ -210,11 +210,13 @@ Widget _buildAppBar(BuildContext context, TabController tabController,
 Widget _avatar() {
   return Obx(() {
     AvatarController avatarController = Get.find<AvatarController>();
-    return CircleAvatar(
-      backgroundColor: Colors.white,
-      child: avatarController.avatars[0].svgData != null
-          ? SvgPicture.string(avatarController.avatars[0].svgData!)
-          : SvgPicture.asset("assets/images/group_logo.svg"),
-    );
+    return (avatarController.avatars.isNotEmpty)
+        ? CircleAvatar(
+            backgroundColor: Colors.white,
+            child: avatarController.avatars[0].svgData != null
+                ? SvgPicture.string(avatarController.avatars[0].svgData!)
+                : SvgPicture.asset("assets/images/group_logo.svg"),
+          )
+        : const CircularProgressIndicator();
   });
 }

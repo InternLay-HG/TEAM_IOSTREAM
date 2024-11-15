@@ -8,6 +8,8 @@ class ChatController extends GetxController {
   final RxString searchQuery = "".obs;
   final TextEditingController searchController = TextEditingController();
 
+  final RxList<String> messages = <String>[].obs;
+
   void toggleSearch() {
     isSearching.value = !isSearching.value;
     if (!isSearching.value) searchQuery.value = '';
@@ -15,5 +17,10 @@ class ChatController extends GetxController {
 
   void clearSearchQuery() {
     searchController.text = '';
+  }
+
+  // Add new message to the messages list
+  void addMessage(String message) {
+    messages.add(message);
   }
 }

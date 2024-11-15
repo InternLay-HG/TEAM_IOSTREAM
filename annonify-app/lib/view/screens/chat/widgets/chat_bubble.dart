@@ -132,7 +132,6 @@ class SentMessage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          // (sender)?
           messageTextGroup,
           const SizedBox(width: 10),
           _avatar(avatarController),
