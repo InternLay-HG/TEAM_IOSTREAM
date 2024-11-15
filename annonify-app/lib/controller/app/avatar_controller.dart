@@ -15,7 +15,9 @@ class AvatarController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchAvatars();
+    if (avatars.isEmpty) {
+      fetchAvatars();
+    }
   }
 
   void selectAvatar(String name) {

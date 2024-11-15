@@ -7,7 +7,7 @@ class PostModel {
   int likes;
 
   PostModel({
-    required this.avatar,
+    this.avatar,
     required this.name,
     this.image,
     this.postTitle,

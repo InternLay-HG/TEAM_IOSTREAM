@@ -23,5 +23,5 @@ class LightThemeColors {
   static const Color secondaryTextColor = Color(0xff4f4f4f);
   static const Color senderBubbleColor = Color(0xff7725ad);
   static const Color receiverBubbleColor = Color(0xff106cb8);
-  static const Color postButtonColor = Color(0xff2e2e2e);
+  static const Color postButtonColor = Color(0xffb7b7b7);
 }

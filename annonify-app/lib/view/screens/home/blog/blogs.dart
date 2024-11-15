@@ -1,5 +1,7 @@
 import 'package:annonify/controller/app/avatar_controller.dart';
 import 'package:annonify/controller/app/theme_controller.dart';
+import 'package:annonify/controller/blog/blog_controller.dart';
+import 'package:annonify/models/avatar.dart';
 import 'package:annonify/models/blog/post_model.dart';
 import 'package:annonify/view/Widgets/ellipsis_text.dart';
 import 'package:annonify/view/screens/home/blog/widgets/post.dart';
@@ -13,8 +15,8 @@ class Blogs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeController themeController = Get.find<ThemeController>();
     AvatarController avatarController = Get.find<AvatarController>();
+    BlogController controller = Get.put(BlogController());
 
     final List<PostModel> posts = [
       PostModel(
@@ -29,7 +31,7 @@ class Blogs extends StatelessWidget {
         name: "house of Geeks",
         postTitle: "Happy Diwali to all IIITians",
         postBody:
-            "While we’re busy debugging code and breaking things in production, Diwali arrives to remind us that not all lights are errors! 💡🎇 Let’s celebrate this festival with fewer bugs and more brightness (literally). May your code run without exceptions, and your projects compile with 0 warnings!  Happy Diwali from the sleep-deprived but ever-enthusiastic House of Geeks",
+            "While we’re busy debugging code and breaking things in production, Diwali arrives to remind us that not all lights are errors! 💡🎇 Let’s celebrate this festival with fewer bugs and more brightness (literally). May your code run without exceptions, and your projects compile with 0 warnings!Happy Diwali from the sleep-deprived but ever-enthusiastic House of Geeks",
       )
     ];
 
