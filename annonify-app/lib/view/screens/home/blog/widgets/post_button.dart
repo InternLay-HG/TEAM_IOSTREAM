@@ -5,11 +5,13 @@ import 'package:get/get.dart';
 class PostButton extends StatelessWidget {
   final IconData icon;
   final String? text;
+  final VoidCallback onTap;
 
   const PostButton({
     super.key,
     required this.icon,
     this.text = "",
+    required this.onTap,
   });
 
   @override
@@ -21,7 +23,7 @@ class PostButton extends StatelessWidget {
         backgroundColor:
             WidgetStatePropertyAll(themeController.postButtonColor),
       ),
-      onPressed: () {},
+      onPressed: onTap,
       label: Text(
         text!,
         style: Theme.of(context).textTheme.bodySmall,
@@ -31,24 +33,5 @@ class PostButton extends StatelessWidget {
         color: themeController.textSubHeading,
       ),
     );
-    //     Container(
-    //   padding: const EdgeInsets.all(8),
-    //   // margin: const EdgeInsets.all(10),
-    //   decoration: BoxDecoration(
-    //       color: themeController.postButtonColor, shape: BoxShape.circle),
-    //   child: Row(
-    //     children: [
-    //       Icon(
-    //         icon,
-    //         color: themeController.textSubHeading,
-    //       ),
-    //       if (text != null)
-    //         Text(
-    //           text!,
-    //           style: Theme.of(context).textTheme.bodySmall,
-    //         ),
-    //     ],
-    //   ),
-    // ),
   }
 }

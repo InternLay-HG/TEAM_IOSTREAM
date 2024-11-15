@@ -1,8 +1,9 @@
 import 'package:annonify/models/avatar.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 class AvatarRepository {
-  final String baseUrl = "https://api.dicebear.com/9.x/adventurer/svg?seed=";
+  final String? baseUrl = dotenv.env['avatarUri'];
 
   // List of avatar names
   final List<String> avatarNames = [

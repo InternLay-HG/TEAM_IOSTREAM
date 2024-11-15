@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:annonify/controller/app/theme_controller.dart';
+import 'package:annonify/controller/blog/blog_controller.dart';
 import 'package:annonify/models/blog/post_model.dart';
 import 'package:annonify/view/screens/home/blog/widgets/post_button.dart';
 import 'package:annonify/view/widgets/ellipsis_text.dart';
@@ -16,6 +17,7 @@ class Post extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeController themeController = Get.find<ThemeController>();
+    final BlogController controller = Get.find<BlogController>();
 
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 10),
@@ -41,9 +43,10 @@ class Post extends StatelessWidget {
             const SizedBox(height: 10),
 
             //Post Image
-            if(post.image!=null)Image.file(File(post.image!.path.toString())),
+            if (post.image != null)
+              Image.file(File(post.image!.path.toString())),
 
-            // Post Text
+            // Post Title
             const SizedBox(height: 10),
             if (post.postTitle != null)
               Text(
@@ -51,6 +54,7 @@ class Post extends StatelessWidget {
                 style: Theme.of(context).textTheme.titleMedium,
               ),
 
+            //Post Description
             if (post.postBody != null)
               EllipsisText(
                 text: post.postBody!,
@@ -60,16 +64,22 @@ class Post extends StatelessWidget {
             const SizedBox(height: 10),
 
             // Like and Comment Buttons
-            const Row(
+            Row(
               children: [
                 PostButton(
+                  onTap: () {
+                    controller.like(post);
+                  },
                   icon: Icons.favorite_border,
-                  text: "0",
+                  text: post.likes.toString(),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 PostButton(
+                  onTap: () {},
                   icon: Icons.mode_comment_outlined,
-                  text: "0",
+                  text: (post.comments != null)
+                      ? post.comments!.length.toString()
+                      : "0",
                 ),
               ],
             ),
