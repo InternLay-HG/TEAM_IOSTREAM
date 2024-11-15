@@ -8,7 +8,7 @@ ThemeData lightTheme = ThemeData(
   scaffoldBackgroundColor: LightThemeColors.primaryColor,
   iconTheme: const IconThemeData(color: LightThemeColors.textHeading),
   fontFamily:
-  GoogleFonts.chakraPetch(color: LightThemeColors.textHeading).fontFamily,
+      GoogleFonts.chakraPetch(color: LightThemeColors.textHeading).fontFamily,
   textTheme: const TextTheme(
     displayLarge: TextStyle(
       fontSize: 24,
@@ -82,9 +82,9 @@ ThemeData lightTheme = ThemeData(
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ButtonStyle(
       backgroundColor:
-      const WidgetStatePropertyAll(LightThemeColors.accentColor),
+          const WidgetStatePropertyAll(LightThemeColors.accentColor),
       foregroundColor:
-      const WidgetStatePropertyAll(LightThemeColors.primaryColor),
+          const WidgetStatePropertyAll(LightThemeColors.primaryColor),
       textStyle: WidgetStatePropertyAll(TextStyle(
         fontSize: 16,
         color: LightThemeColors.primaryColor,
@@ -97,7 +97,7 @@ ThemeData lightTheme = ThemeData(
   textButtonTheme: TextButtonThemeData(
     style: ButtonStyle(
       foregroundColor:
-      const WidgetStatePropertyAll(LightThemeColors.accentColor),
+          const WidgetStatePropertyAll(LightThemeColors.accentColor),
       textStyle: WidgetStatePropertyAll(TextStyle(
         fontSize: 16,
         color: LightThemeColors.accentColor,

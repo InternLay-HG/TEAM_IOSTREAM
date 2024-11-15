@@ -1,7 +1,4 @@
 import 'dart:io';
-
-import 'package:get/get.dart';
-
 import 'comment_model.dart';
 
 class PostModel {

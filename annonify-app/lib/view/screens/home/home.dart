@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       onPopInvokedWithResult: _onPop,
       child: Obx(
         () => (avatarController.avatars.isEmpty)
-            ? const Scaffold(body: Center(child: CircularProgressIndicator()))
+            ? Scaffold(body: Center(child: const CircularProgressIndicator()))
             : Scaffold(
                 appBar: PreferredSize(
                   preferredSize: const Size.fromHeight(120),

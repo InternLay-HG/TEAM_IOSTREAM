@@ -1,4 +1,3 @@
-import 'package:annonify/controller/app/avatar_controller.dart';
 import 'package:annonify/controller/blog/blog_controller.dart';
 import 'package:annonify/view/screens/home/blog/widgets/post.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +8,6 @@ class Blogs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AvatarController avatarController = Get.find<AvatarController>();
     BlogController controller = Get.put(BlogController());
     return Obx(
       () => ListView.builder(

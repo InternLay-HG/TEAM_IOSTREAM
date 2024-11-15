@@ -30,19 +30,4 @@ class Validator {
 
     return null;
   }
-
-  static String? validateConfPassword(String? password, String? confPassword) {
-    if (password == null || password.isEmpty) {
-      return "Password is required";
-    }
-
-    if (password.length < 6) {
-      return "Password is too short";
-    }
-    if (password != confPassword) {
-      return "Password does not match";
-    }
-
-    return null;
-  }
 }

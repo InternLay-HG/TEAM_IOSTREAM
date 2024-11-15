@@ -1,7 +1,6 @@
 import 'package:annonify/view/screens/auth/signIn/widgets/sign_in_form.dart';
 import 'package:annonify/view/widgets/sample.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class SignInPage extends StatelessWidget {
   const SignInPage({super.key});
@@ -32,19 +31,6 @@ class SignInPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     const SignInForm(),
-                    const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Flexible(child: Text("Don't have an account?")),
-                        TextButton(
-                          onPressed: () {
-                            Get.offNamed('/chooseAvatar');
-                          },
-                          child: const Text("CREATE  ONE"),
-                        )
-                      ],
-                    )
                   ],
                 ),
               ),

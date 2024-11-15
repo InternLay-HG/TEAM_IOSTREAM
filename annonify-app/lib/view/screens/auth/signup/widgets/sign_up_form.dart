@@ -9,8 +9,7 @@ class SignUpForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final controller = Get.put(SignUpController());
-    final controller = Get.find<SignUpController>();
+    final controller = Get.put(SignUpController());
     final ThemeController themeController = Get.find<ThemeController>();
 
     return Form(
@@ -29,7 +28,6 @@ class SignUpForm extends StatelessWidget {
               ),
               validator: (value) => Validator.validateEmail(value),
             ),
-            const SizedBox(height: 15),
             TextFormField(
               cursorColor: themeController.textHeading,
               controller: controller.nameController,
@@ -64,8 +62,7 @@ class SignUpForm extends StatelessWidget {
                 cursorColor: themeController.textHeading,
                 obscureText: controller.hideConfPassword.value,
                 controller: controller.confPassController,
-                validator: (value) => Validator.validateConfPassword(
-                    controller.passwordController.text, value),
+                validator: (value) => Validator.validatePassword(value),
                 decoration: InputDecoration(
                   hintText: "Confirm Password",
                   suffixIcon: InkWell(
@@ -84,7 +81,7 @@ class SignUpForm extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  controller.signUp();
+                  Get.toNamed('/chooseAvatar');
                 },
                 style: const ButtonStyle(
                   padding: WidgetStatePropertyAll(
@@ -93,7 +90,19 @@ class SignUpForm extends StatelessWidget {
                 child: const Text("SIGN UP"),
               ),
             ),
-            //
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Flexible(child: Text("Already have an account?")),
+                TextButton(
+                  onPressed: () {
+                    Get.offNamed('/signin');
+                  },
+                  child: const Text("NEXT"),
+                )
+              ],
+            )
           ],
         ),
       ),

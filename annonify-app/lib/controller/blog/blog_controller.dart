@@ -52,6 +52,7 @@ class BlogController extends GetxController {
       postBody: bodyController.text,
       image: selectedImage.value,
     ));
+
     clearFields();
   }
 

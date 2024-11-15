@@ -8,7 +8,7 @@ ThemeData darkTheme = ThemeData(
   scaffoldBackgroundColor: DarkThemeColors.primaryColor,
   iconTheme: const IconThemeData(color: DarkThemeColors.textHeading),
   fontFamily:
-  GoogleFonts.chakraPetch(color: DarkThemeColors.textHeading).fontFamily,
+      GoogleFonts.chakraPetch(color: DarkThemeColors.textHeading).fontFamily,
   textTheme: const TextTheme(
     displayLarge: TextStyle(
       fontSize: 24,
@@ -82,9 +82,9 @@ ThemeData darkTheme = ThemeData(
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ButtonStyle(
       backgroundColor:
-      const WidgetStatePropertyAll(DarkThemeColors.accentColor),
+          const WidgetStatePropertyAll(DarkThemeColors.accentColor),
       foregroundColor:
-      const WidgetStatePropertyAll(DarkThemeColors.primaryColor),
+          const WidgetStatePropertyAll(DarkThemeColors.primaryColor),
       textStyle: WidgetStatePropertyAll(TextStyle(
         fontSize: 16,
         color: DarkThemeColors.primaryColor,
@@ -97,7 +97,7 @@ ThemeData darkTheme = ThemeData(
   textButtonTheme: TextButtonThemeData(
     style: ButtonStyle(
       foregroundColor:
-      const WidgetStatePropertyAll(DarkThemeColors.accentColor),
+          const WidgetStatePropertyAll(DarkThemeColors.accentColor),
       textStyle: WidgetStatePropertyAll(TextStyle(
         fontSize: 16,
         color: DarkThemeColors.accentColor,
