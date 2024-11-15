@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'comment_model.dart';
+
 
 class PostModel {
   String? avatar;
@@ -8,6 +10,7 @@ class PostModel {
   String? postTitle;
   String? postBody;
   int likes;
+  List<Comment> comments;
 
   PostModel({
     this.avatar,
@@ -16,5 +19,6 @@ class PostModel {
     this.postTitle,
     this.postBody,
     this.likes = 0,
+    this.comments=const [],
   });
 }

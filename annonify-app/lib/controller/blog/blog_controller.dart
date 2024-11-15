@@ -44,10 +44,9 @@ class BlogController extends GetxController {
 
   void addBlog(){
     posts.add(PostModel(
-      name: "User", // Replace with dynamic username if available
+      name: "User",
       postTitle: titleController.text,
       postBody: bodyController.text,
-      // Convert the image to an appropriate format or store the file path
       image: selectedImage.value,
     ));
     clearFields();
