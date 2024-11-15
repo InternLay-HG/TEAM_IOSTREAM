@@ -1,3 +1,4 @@
+
 import 'package:annonify/configs/Theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,6 +22,10 @@ class ThemeController extends GetxController {
       ? DarkThemeColors.textHeading
       : LightThemeColors.textHeading;
 
+  Color get textSubHeading => (isDark.value)
+      ? DarkThemeColors.textSubHeading
+      : LightThemeColors.textSubHeading;
+
   Color get secondaryTextColor => (isDark.value)
       ? DarkThemeColors.secondaryTextColor
       : LightThemeColors.secondaryTextColor;
@@ -28,6 +33,10 @@ class ThemeController extends GetxController {
   Color get highlightColor => (isDark.value)
       ? DarkThemeColors.highlightColor
       : LightThemeColors.highlightColor;
+
+  Color get postButtonColor => (isDark.value)
+      ? DarkThemeColors.postButtonColor
+      : LightThemeColors.postButtonColor;
 
   void toggleTheme() {
     isDark.value = !isDark.value;
