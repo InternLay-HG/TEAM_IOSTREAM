@@ -1,9 +1,11 @@
 import 'dart:io';
 
+import 'package:annonify/controller/app/avatar_controller.dart';
 import 'package:annonify/controller/app/theme_controller.dart';
 import 'package:annonify/controller/blog/blog_controller.dart';
 import 'package:annonify/models/blog/post_model.dart';
 import 'package:annonify/view/screens/home/blog/widgets/post_button.dart';
+import 'package:annonify/view/screens/home/blog/widgets/post_image.dart';
 import 'package:annonify/view/widgets/ellipsis_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -20,7 +22,7 @@ class Post extends StatelessWidget {
     final BlogController controller = Get.find<BlogController>();
 
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 10),
+      margin: const EdgeInsets.symmetric(vertical: 5),
       elevation: 4,
       color: themeController.primaryColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
@@ -32,10 +34,10 @@ class Post extends StatelessWidget {
             // Avatar and username
             Row(
               children: [
-                _avatar(post.avatar),
+                _avatar(),
                 const SizedBox(width: 10),
                 Text(
-                  post.name,
+                  "User",
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ],
@@ -43,21 +45,21 @@ class Post extends StatelessWidget {
             const SizedBox(height: 10),
 
             //Post Image
-            if (post.image != null)
-              Image.file(File(post.image!.path.toString())),
+            // if (post.image != null) Image.file(File(post.image.toString())),
+            if (post.image != null) PostImage(post: post),
 
             // Post Title
             const SizedBox(height: 10),
-            if (post.postTitle != null)
-              Text(
-                post.postTitle!,
-                style: Theme.of(context).textTheme.titleMedium,
+            if (post.title != null)
+              EllipsisText(
+                text: post.title!,
+                textStyle: Theme.of(context).textTheme.titleMedium,
               ),
 
             //Post Description
-            if (post.postBody != null)
+            if (post.description != null)
               EllipsisText(
-                text: post.postBody!,
+                text: post.description!,
                 textStyle: Theme.of(context).textTheme.bodySmall,
               ),
 
@@ -90,12 +92,13 @@ class Post extends StatelessWidget {
   }
 }
 
-Widget _avatar(String? image) {
+Widget _avatar() {
+  AvatarController avatarController = Get.find<AvatarController>();
   return CircleAvatar(
+    maxRadius: 15,
     backgroundColor: Colors.white,
-    child: image != null
-        ? SvgPicture.string(image)
+    child: avatarController.avatars[0].svgData != null
+        ? SvgPicture.string(avatarController.avatars[0].svgData!)
         : SvgPicture.asset("assets/images/group_logo.svg"),
   );
-  // });
 }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:annonify/models/blog/comment_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:annonify/models/blog/post_model.dart';
 import 'package:flutter/material.dart';
@@ -13,27 +14,19 @@ class BlogController extends GetxController {
 
   String? server = dotenv.env['uri'];
 
-  final RxList<PostModel> posts = [
-    PostModel(
-      // avatar: avatarController.avatars[0].svgData,
-      name: "house of Geeks",
-      postTitle: "Happy Diwali to all IIITians",
-      postBody:
-          "While we’re busy debugging code and breaking things in production, Diwali arrives to remind us that not all lights are errors! 💡🎇 Let’s celebrate this festival with fewer bugs and more brightness (literally). May your code run without exceptions, and your projects compile with 0 warnings!  Happy Diwali from the sleep-deprived but ever-enthusiastic House of Geeks",
-    ),
-    PostModel(
-      // avatar: avatarController.avatars[0].svgData,
-      name: "house of Geeks",
-      postTitle: "Happy Diwali to all IIITians",
-      postBody:
-          "While we’re busy debugging code and breaking things in production, Diwali arrives to remind us that not all lights are errors! 💡🎇 Let’s celebrate this festival with fewer bugs and more brightness (literally). May your code run without exceptions, and your projects compile with 0 warnings!Happy Diwali from the sleep-deprived but ever-enthusiastic House of Geeks",
-    )
-  ].obs;
+  final RxList<PostModel> posts = <PostModel>[].obs;
 
   ////Add blog
   final TextEditingController titleController = TextEditingController();
   final TextEditingController bodyController = TextEditingController();
   var selectedImage = Rxn<File>();
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+    fetchPosts();
+  }
 
   // Function to pick an image
   Future<void> pickImage() async {
@@ -75,12 +68,7 @@ class BlogController extends GetxController {
 
       if (response.statusCode == 201) {
         final responseData = json.decode(responseBody);
-        posts.add(PostModel(
-          name: "User",
-          postTitle: titleController.text,
-          postBody: bodyController.text,
-          image: selectedImage.value,
-        ));
+        refreshBlogs();
         Get.snackbar("Success", "Blog added!");
         clearFields();
       } else {
@@ -93,8 +81,8 @@ class BlogController extends GetxController {
   }
 
   void like(PostModel post) {
-    post.likes++;
-    posts.refresh();
+    // post.likes++;
+    // posts.refresh();
   }
 
   void clearFields() {
@@ -103,10 +91,75 @@ class BlogController extends GetxController {
     selectedImage.value = null;
   }
 
+  //Fetch Posts
+  Future<void> fetchPosts() async {
+    try {
+      final url = Uri.parse('$server/posts');
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        posts.assignAll(data.map((json) => PostModel.fromJson(json)).toList());
+      } else {
+        throw Exception('Failed to load posts');
+      }
+    } catch (error) {
+      print(error);
+      Get.snackbar("Error", "Failed to fetch posts.");
+    }
+  }
+
+  Future<void> refreshBlogs() async {
+    await fetchPosts();
+  }
+
+  ////Comments.............................................................
+  final TextEditingController commentController = TextEditingController();
+
+  // Add a comment to a post
+  Future<void> addComment(String? postId) async {
+    final url = Uri.parse('$server/comments');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'content': commentController.text,
+          'postId': postId,
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        final responseData = json.decode(response.body);
+        final newComment = CommentModel.fromJson(responseData);
+
+        // Update the post's comments list in the local posts list
+        final updatedPosts = posts.map((post) {
+          if (post.id == postId) {
+            post.comments.add(newComment); // Add the new comment to the post
+          }
+          return post;
+        }).toList();
+
+        posts.value = updatedPosts; // Update the posts list
+
+        Get.snackbar("Success", "Comment added!");
+        commentController.clear(); // Clear the input field after adding comment
+      } else {
+        final error = json.decode(response.body);
+        Get.snackbar("Error", error['message'] ?? "Failed to add comment.");
+      }
+    } catch (error) {
+      Get.snackbar("Error", "Something went wrong. Please try again.");
+    }
+  }
+
   @override
   void onClose() {
     titleController.dispose();
     bodyController.dispose();
+    commentController.dispose();
     super.onClose();
   }
 }
