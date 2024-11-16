@@ -79,9 +79,7 @@ class Post extends StatelessWidget {
                 PostButton(
                   onTap: () {},
                   icon: Icons.mode_comment_outlined,
-                  text: (post.comments != null)
-                      ? post.comments!.length.toString()
-                      : "0",
+                  text: post.comments.length.toString(),
                 ),
               ],
             ),

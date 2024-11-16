@@ -119,6 +119,7 @@ class BlogController extends GetxController {
   // Add a comment to a post
   Future<void> addComment(String? postId) async {
     final url = Uri.parse('$server/comments');
+    if (commentController.text.isEmpty) return;
 
     try {
       final response = await http.post(
@@ -134,15 +135,12 @@ class BlogController extends GetxController {
         final responseData = json.decode(response.body);
         final newComment = CommentModel.fromJson(responseData);
 
-        // Update the post's comments list in the local posts list
-        final updatedPosts = posts.map((post) {
-          if (post.id == postId) {
-            post.comments.add(newComment); // Add the new comment to the post
-          }
-          return post;
-        }).toList();
-
-        posts.value = updatedPosts; // Update the posts list
+        // Find the post and update its comments
+        final index = posts.indexWhere((post) => post.id == postId);
+        if (index != -1) {
+          posts[index].comments.add(newComment);
+          posts.refresh(); // Notify GetX to update UI
+        }
 
         Get.snackbar("Success", "Comment added!");
         commentController.clear(); // Clear the input field after adding comment

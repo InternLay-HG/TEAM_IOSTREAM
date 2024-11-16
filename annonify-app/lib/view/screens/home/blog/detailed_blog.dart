@@ -21,29 +21,32 @@ class DetailedBlog extends StatelessWidget {
     final PostModel post = Get.arguments;
     ThemeController themeController = Get.find<ThemeController>();
     BlogController controller = Get.find<BlogController>();
+    int index = controller.posts.indexWhere((element) => element.id == post.id);
 
     return Scaffold(
       appBar: _buildAppBar(context),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _postSection(context, post),
-                    const SizedBox(height: 20),
-                    _commentsSection(post),
-                  ],
+      body: Obx(
+        () => Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _postSection(context, post),
+                      const SizedBox(height: 20),
+                      _commentsSection(controller.posts[index]),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          _commentsField(context, controller, post),
-        ],
+            _commentsField(context, controller, post),
+          ],
+        ),
       ),
     );
   }
