@@ -36,15 +36,23 @@ router.post("/join-group/:groupId", passport.authenticate("jwt", { session: fals
     }
 });
 
+
 router.get('/messages/:groupId', async (req, res) => {
-    try {
-        const messages = await Message.find({ group: req.params.groupId })
-            .populate('user', 'username')
-            .sort('timestamp'); 
-        res.json(messages);
-    } catch (error) {
-        res.status(500).json({ error: 'Error fetching messages' });
-    }
+  try {
+      const groupId = mongoose.Types.ObjectId(req.params.groupId); 
+      const messages = await Message.find({ group: groupId })
+          .populate('user', 'name') 
+          .sort({ timestamp: 'asc' }); 
+
+      if (!messages.length) {
+          return res.status(404).json({ error: 'No messages found for this group.' });
+      }
+
+      res.json(messages);
+  } catch (error) {
+      console.error('Error fetching messages:', error);
+      res.status(500).json({ error: 'Error fetching messages' });
+  }
 });
 
 const storage = multer.diskStorage({

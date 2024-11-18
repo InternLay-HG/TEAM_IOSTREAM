@@ -29,9 +29,9 @@ app.use(passport.initialize());
 passportAuth(passport); 
 app.use('/api', apiRoutes);
 
-// app.get('/', (req, res) => {
-//     res.sendFile(__dirname + '/public/index.html');
-// });
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/public/app.html');
+});
 
 io.on('connection', (socket) => {
     console.log('A user connected');

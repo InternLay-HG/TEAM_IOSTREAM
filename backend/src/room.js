@@ -1,63 +1,47 @@
-const Message = require('./models/message');
-const Group = require('./models/group');
-const User = require('./models/user');
-const mongoose = require('mongoose')
+const Message = require('./models/message');  
+const Group = require('./models/group');      
+const User = require('./models/user');        
+
 module.exports = (io) => {
-    io.on("connection", async (socket) => {
+    io.on("connection", (socket) => {
         console.log(`User connected: ${socket.id}`);
 
-        
+        // Extract user ID and group ID from the handshake or frontend parameters
         const userId = socket.handshake.query.userId;
+        const groupId = socket.handshake.query.groupId;
 
-        try {
-            const user = await User.findById(userId);
-            if (!user) {
-                console.error("User not found");
-                socket.disconnect();
-                return;
-            }
+        // User joins the group room
+        socket.join(groupId);
+        console.log(`User ${userId} joined group ${groupId}`);
 
-            const userGroups = await Group.find({ members: userId });
-            const availableGroups = userGroups.map(group => group.name);
-
-            
-            availableGroups.forEach((groupName) => {
-                socket.join(groupName);
-                console.log(`${socket.id} joined group: ${groupName}`);
-            });
-            socket.emit("joinedGroups", availableGroups);
-        } catch (error) {
-            console.error("Error fetching user groups from MongoDB:", error);
-        }
-
-        socket.on("groupMessage", async ({ groupName, message }) => {
+        // Listen for a new message in the group
+        socket.on("sendMessage", async ({ messageContent }) => {
             try {
-                const group = await Group.findOne({ name: groupName });
-                if (!group) {
-                    return console.error(`Group not found: ${groupName}`);
-                }
+                // Create a new message document
                 const newMessage = new Message({
-                    content: message,
+                    content: messageContent,
                     user: userId,
-                    group: group._id
+                    group: groupId
                 });
-                console.log('User ID:', userId); // Log userId
-                console.log('Group ID:', group._id); // Log group ID
 
-                console.log('Saving message:', newMessage);
+                // Save message to MongoDB
                 await newMessage.save();
-                console.log('Message saved:', newMessage);
-                io.to(groupName).emit("newGroupMessage", {
-                    sender: userId,
-                    message,
-                    group: groupName,
-                    timestamp: newMessage.timestamp
+
+                
+                await newMessage.populate('user', 'name').execPopulate();
+
+                // Emit message to everyone in the group
+                io.to(groupId).emit("receiveMessage", {
+                    content: newMessage.content,
+                    user: newMessage.user.name,
+                    timestamp: newMessage.createdAt
                 });
             } catch (error) {
-                console.error('Error saving message:', error);
+                console.error('Error saving or sending message:', error);
             }
         });
 
+        // Handle user disconnection
         socket.on("disconnect", () => {
             console.log(`User disconnected: ${socket.id}`);
         });
