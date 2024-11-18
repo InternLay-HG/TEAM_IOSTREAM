@@ -5,10 +5,13 @@ import 'package:annonify/controller/app/avatar_controller.dart';
 import 'package:annonify/controller/app/theme_controller.dart';
 import 'package:annonify/repositories/avatar_repo.dart';
 import 'package:annonify/view/screens/auth/signIn/sign_in.dart';
+import 'package:annonify/view/screens/home/home.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 
-void main() {
+void main() async {
+  await dotenv.load(fileName: ".env");
   Get.put(AvatarController(AvatarRepository()));
   runApp(const MyApp());
 }
@@ -27,7 +30,7 @@ class MyApp extends StatelessWidget {
         theme: lightTheme,
         darkTheme: darkTheme,
         getPages: AppRouter.routes,
-        home: const SignInPage(),
+        home: const HomePage(),
       );
     });
   }

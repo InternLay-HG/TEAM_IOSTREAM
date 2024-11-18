@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const Group = require("./group"); // Import the Group model
 
 const userSchema = new mongoose.Schema({
     email: {
@@ -21,20 +22,47 @@ const userSchema = new mongoose.Schema({
         default: null,
     },
 }, { timestamps: true });
-userSchema.pre('save', function(next) {
+
+// Hash the password before saving the user
+userSchema.pre('save', async function(next) {
     const user = this;
     if (!user.isModified('password')) return next();
-    
-    const SALT = bcrypt.genSaltSync(9);
-    const encryptedPassword = bcrypt.hashSync(user.password, SALT);
-    user.password = encryptedPassword;
-    next();
+
+    try {
+        const SALT = await bcrypt.genSalt(9);
+        user.password = await bcrypt.hash(user.password, SALT);
+
+        // Add the user to all groups
+        if (user.isNew) { // Only for new users
+            const allGroups = await Group.find({});
+            const userId = user._id;
+
+            const groupUpdatePromises = allGroups.map(group => 
+                Group.findByIdAndUpdate(
+                    group._id,
+                    { $addToSet: { members: userId } }, // Prevent duplicates
+                    { new: true }
+                )
+            );
+
+            await Promise.all(groupUpdatePromises);
+        }
+
+        next();
+    } catch (error) {
+        next(error);
+    }
 });
+
+// Compare password
 userSchema.methods.comparePassword = function(password) {
-    return bcrypt.compareSync(password, this.password);
+    return bcrypt.compare(password, this.password);
 };
+
+// Generate JWT
 userSchema.methods.genJWT = function() {
-    return jwt.sign({ id: this._id, email: this.email }, 'chitransh_key', {
+    const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret';
+    return jwt.sign({ id: this._id, email: this.email }, JWT_SECRET, {
         expiresIn: '1h'
     });
 };
