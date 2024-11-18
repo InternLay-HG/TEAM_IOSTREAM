@@ -33,20 +33,6 @@ userSchema.pre('save', async function(next) {
         user.password = await bcrypt.hash(user.password, SALT);
 
         // Add the user to all groups
-        if (user.isNew) { // Only for new users
-            const allGroups = await Group.find({});
-            const userId = user._id;
-
-            const groupUpdatePromises = allGroups.map(group => 
-                Group.findByIdAndUpdate(
-                    group._id,
-                    { $addToSet: { members: userId } }, // Prevent duplicates
-                    { new: true }
-                )
-            );
-
-            await Promise.all(groupUpdatePromises);
-        }
 
         next();
     } catch (error) {

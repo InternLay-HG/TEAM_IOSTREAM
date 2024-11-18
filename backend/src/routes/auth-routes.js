@@ -7,6 +7,7 @@ const passport = require("passport");
 const multer = require('multer');
 const Comment = require('../models/comment');
 const Post = require('../models/post');
+const mongoose = require('mongoose')
 
 const router = express.Router();
 
@@ -51,7 +52,7 @@ router.get('/groups/:userId', async (req, res) => {
 
 router.get('/messages/:groupId', async (req, res) => {
   try {
-      const groupId = mongoose.Types.ObjectId(req.params.groupId); 
+      const groupId = new mongoose.Types.ObjectId(req.params.groupId); 
       const messages = await Message.find({ group: groupId })
           .populate('user', 'name') 
           .sort({ timestamp: 'asc' }); 
@@ -91,7 +92,20 @@ const storage = multer.diskStorage({
       res.status(500).json({ error: err.message });
     }
   });
-  
+  // Fetch authenticated user info
+  router.get('/user', passport.authenticate('jwt', { session: false }), async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id); // Extract user ID from JWT
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+        res.json(user); // Respond with user data
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Error fetching user info" });
+    }
+});
+
   // Get all blog posts
   router.get('/posts', async (req, res) => {
     try {

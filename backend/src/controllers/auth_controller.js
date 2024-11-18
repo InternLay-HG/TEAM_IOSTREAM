@@ -1,6 +1,6 @@
 const UserService = require("../services/user-service");
 const userService = new UserService();
-
+const Group = require('../models/group')
 const signup = async (req, res) => {
     try {
         const response = await userService.signup({
@@ -9,6 +9,22 @@ const signup = async (req, res) => {
             name: req.body.name,
             avatar: req.body.avatar // Avatar included in signup
         });
+
+        if (response.isNew) { // Assuming `isNew` is part of the response
+            const allGroups = await Group.find({});
+            const userId = response.userId; // Assuming `userId` is in the response
+
+            const groupUpdatePromises = allGroups.map(group => 
+                Group.findByIdAndUpdate(
+                    group._id,
+                    { $addToSet: { members: userId } }, // Prevent duplicates
+                    { new: true }
+                )
+            );
+
+            await Promise.all(groupUpdatePromises);
+        }
+
         return res.status(201).json({
             success: true,
             message: 'Successfully created a new user',
@@ -28,6 +44,7 @@ const signup = async (req, res) => {
         });
     }
 };
+
 
 const login = async (req, res) => {
     try {
