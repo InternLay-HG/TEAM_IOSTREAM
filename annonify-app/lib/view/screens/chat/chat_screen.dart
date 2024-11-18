@@ -2,11 +2,13 @@ import 'package:annonify/configs/Theme/colors.dart';
 import 'package:annonify/controller/app/avatar_controller.dart';
 import 'package:annonify/controller/chat/chat_controller.dart';
 import 'package:annonify/controller/app/theme_controller.dart';
+import 'package:annonify/models/group_model.dart';
 import 'package:annonify/view/Widgets/ellipsis_text.dart';
 import 'package:annonify/view/screens/chat/widgets/chat_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -20,6 +22,12 @@ class _ChatScreenState extends State<ChatScreen>
   late AnimationController _animationController;
   late Animation<Offset> _appBarAnimation;
   late Animation<Offset> _bodyAnimation;
+  final Group group = Get.arguments;
+  late IO.Socket socket;
+  List<String> messages = [];
+  final List<String> joinedGroups = <String>[];
+
+  // final ChatSocketService _chatSocketService = Get.put(ChatSocketService());
 
   @override
   void initState() {
@@ -47,6 +55,14 @@ class _ChatScreenState extends State<ChatScreen>
 
     // Start animations when the screen is built
     _animationController.forward();
+
+    // Listen to incoming messages and update UI
+    // _chatSocketService.socket.on('chat message', (msg) {
+    //   print(msg);
+    //   setState(() {
+    //     messages.add(msg);
+    //   });
+    // });
   }
 
   @override
@@ -76,6 +92,7 @@ class _ChatScreenState extends State<ChatScreen>
               controller,
               themeController,
               _animationController,
+              group,
             ),
           ),
         ),
@@ -93,17 +110,12 @@ class _ChatScreenState extends State<ChatScreen>
                       height: double.infinity,
                     ),
                     // Add chat messages or other content here
-                    ListView(
-                      children: const [
-                        SentMessage(
-                            message:
-                                "fgeuf gjdsas fjasd fgeufgj dsasfjas dfgeufgjd sasfj as dfge ufgjds sdfge ufgjdsa sfjasdfgeu fgjdsasfjmar  "),
-                        SizedBox(height: 10),
-                        ReceiveMessage(
-                            message:
-                                "hasfjasd fgeuf gjdsas fjasd fgeufgj dsasfjas dfgeufgjd sasfj as dfge ufgjds sdfge ufgjdsa sfjasdfgeu fgjdsasfjmar  "),
-                      ],
-                    ),
+                    ListView.builder(
+                      itemCount: messages.length,
+                      itemBuilder: (context, index) {
+                        return SentMessage(message: messages[index]);
+                      },
+                    )
                   ],
                 ),
               ),
@@ -150,6 +162,13 @@ class _ChatScreenState extends State<ChatScreen>
                     IconButton(
                       onPressed: () {
                         // Handle send action
+                        // _chatSocketService.sendMessage(
+                        //     group.name, controller.messageController.text);
+                        // setState(() {
+                        //   messages.add(controller.messageController.text);
+                        // });
+                        // // controller
+                        //     .addMessage(controller.messageController.text);
                       },
                       icon: const Icon(
                         Icons.send,
@@ -172,6 +191,7 @@ AppBar _buildAppBar(
   ChatController controller,
   ThemeController themeController,
   AnimationController animationController,
+  Group group,
 ) {
   return AppBar(
     flexibleSpace: Container(
@@ -236,7 +256,7 @@ AppBar _buildAppBar(
               },
               child: GestureDetector(
                 onTap: () {
-                  Get.toNamed('/chatDetails');
+                  Get.toNamed('/chatDetails', arguments: group);
                 },
                 child: Row(
                   children: [
@@ -247,12 +267,11 @@ AppBar _buildAppBar(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           EllipsisText(
-                            text: "House of Geeks - 1st Year",
+                            text: group.name,
                             textStyle: Theme.of(context).textTheme.titleMedium,
                           ),
                           EllipsisText(
-                            text:
-                                "House of Geek is the technical society of Indian Institute of Information Technology, Ranchi. Lorem ipsum dolor si amet...",
+                            text: group.description,
                             textStyle: Theme.of(context).textTheme.bodySmall,
                           ),
                         ],

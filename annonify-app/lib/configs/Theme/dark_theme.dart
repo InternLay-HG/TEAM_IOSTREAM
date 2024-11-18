@@ -112,4 +112,8 @@ ThemeData darkTheme = ThemeData(
       iconColor: WidgetStatePropertyAll(DarkThemeColors.accentColor),
     ),
   ),
+  floatingActionButtonTheme: const FloatingActionButtonThemeData(
+    backgroundColor: DarkThemeColors.accentColor,
+    shape: CircleBorder(),
+  ),
 );

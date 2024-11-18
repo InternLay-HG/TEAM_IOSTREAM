@@ -1,11 +1,11 @@
 import 'package:annonify/configs/Theme/colors.dart';
 import 'package:annonify/controller/app/avatar_controller.dart';
-import 'package:annonify/controller/app/search_bar_controller.dart';
+import 'package:annonify/controller/app/home_page_controller.dart';
 import 'package:annonify/controller/app/theme_controller.dart';
-import 'package:annonify/models/avatar.dart';
-import 'package:annonify/view/Screens/Home/all_chats.dart';
-import 'package:annonify/view/Screens/Home/links.dart';
-import 'package:annonify/view/Screens/Home/media.dart';
+import 'package:annonify/view/screens/home/blog/blogs.dart';
+import 'package:annonify/view/screens/home/blog/widgets/add_blog.dart';
+import 'package:annonify/view/screens/home/chats/all_chats.dart';
+import 'package:annonify/view/screens/home/links/links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -20,14 +20,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<Offset> _bodyAnimation;
-  late TabController _tabController;
-  final SearchBarController _searchBarController =
-      Get.put(SearchBarController());
+  final HomePageController _controller = Get.put(HomePageController());
+  AvatarController avatarController = Get.find<AvatarController>();
+  final ThemeController themeController = Get.find<ThemeController>();
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
@@ -48,7 +47,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   void dispose() {
     _animationController.dispose();
-    _tabController.dispose();
     super.dispose();
   }
 
@@ -60,46 +58,50 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return PopScope(
       onPopInvokedWithResult: _onPop,
-      child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(120),
-          child: _buildAppBar(context, _tabController, _searchBarController),
-        ),
-        body: SlideTransition(
-          position: _bodyAnimation,
-          child: Obx(
-            () {
-              final ThemeController themeController =
-                  Get.find<ThemeController>();
-
-              return Container(
-                padding: const EdgeInsets.only(top: 40, left: 22, right: 22),
-                decoration: BoxDecoration(
-                  color: themeController.contentBG,
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(24),
-                    topRight: Radius.circular(24),
+      child: Obx(
+        () => (avatarController.avatars.isEmpty)
+            ? Scaffold(body: Center(child: const CircularProgressIndicator()))
+            : Scaffold(
+                appBar: PreferredSize(
+                  preferredSize: const Size.fromHeight(120),
+                  child: _buildAppBar(
+                      context, _controller.tabController, _controller),
+                ),
+                body: SlideTransition(
+                  position: _bodyAnimation,
+                  child: Container(
+                    // padding: const EdgeInsets.only(top: 40, left: 22, right: 22),
+                    padding:
+                        const EdgeInsets.only(top: 40, left: 10, right: 10),
+                    decoration: BoxDecoration(
+                      color: themeController.contentBG,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(24),
+                        topRight: Radius.circular(24),
+                      ),
+                    ),
+                    child: TabBarView(
+                      controller: _controller.tabController,
+                      children: _controller.screens,
+                    ),
                   ),
                 ),
-                child: TabBarView(
-                  controller: _tabController,
-                  children: const [
-                    AllChats(),
-                    Media(),
-                    Links(),
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
+                floatingActionButton: (_controller.currentIndex.value == 1)
+                    ? FloatingActionButton(
+                        onPressed: () {
+                          Get.dialog(AddBlogDialog());
+                        },
+                        child: const Icon(Icons.post_add),
+                      )
+                    : null,
+              ),
       ),
     );
   }
 }
 
 Widget _buildAppBar(BuildContext context, TabController tabController,
-    SearchBarController searchBarController) {
+    HomePageController searchBarController) {
   final themeController = Get.find<ThemeController>();
 
   return Obx(() => AppBar(
@@ -200,7 +202,7 @@ Widget _buildAppBar(BuildContext context, TabController tabController,
           controller: tabController,
           tabs: const [
             Text("All Chats"),
-            Text("Media"),
+            Text("Blogs"),
             Text("Links"),
           ],
         ),

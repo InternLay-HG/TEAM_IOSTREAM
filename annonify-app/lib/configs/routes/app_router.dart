@@ -2,7 +2,8 @@ import 'package:annonify/view/Screens/Chat/chat_details.dart';
 import 'package:annonify/view/Screens/Chat/chat_screen.dart';
 import 'package:annonify/view/screens/auth/signIn/sign_in.dart';
 import 'package:annonify/view/screens/auth/signup/sign_up.dart';
-import 'package:annonify/view/screens/auth/signup/widgets/choose_avatar.dart';
+import 'package:annonify/view/screens/auth/signup/choose_avatar.dart';
+import 'package:annonify/view/screens/home/blog/detailed_blog.dart';
 import 'package:annonify/view/screens/home/home.dart';
 import 'package:flutter/animation.dart';
 import 'package:get/get.dart';
@@ -47,6 +48,13 @@ class AppRouter {
     GetPage(
       name: "/chatDetails",
       page: () => const ChatDetails(),
+      transitionDuration: const Duration(milliseconds: 400),
+      transition: Transition.fadeIn,
+      curve: Curves.easeInOut,
+    ),
+    GetPage(
+      name: "/detailedBlog",
+      page: () => const DetailedBlog(),
       transitionDuration: const Duration(milliseconds: 400),
       transition: Transition.fadeIn,
       curve: Curves.easeInOut,
