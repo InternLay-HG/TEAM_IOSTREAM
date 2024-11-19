@@ -49,10 +49,30 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
     console.log(`A user connected: ${socket.id}`); // Log socket ID
 
-    socket.on('join group', (groupId) => {
-        console.log(`User ${socket.id} joined group: ${groupId}`);
-        socket.join(groupId); // Join the specific group room
+    socket.on('join group', async (groupId) => {
+        try {
+            // Validate the groupId
+            const validGroupId = new mongoose.Types.ObjectId(groupId);
+            const groupExists = await Group.findById(validGroupId);
+            if (!groupExists) {
+                console.error(`Group with ID ${groupId} does not exist.`);
+                return;
+            }
+    
+            console.log(`User ${socket.id} joined group: ${groupId}`);
+            socket.join(groupId); // Add the user to the group's room
+    
+            // Fetch and emit previous messages for the group
+            const messages = await Message.find({ group: validGroupId })
+                .populate('user', 'name') // Optional: Populate user name
+                .sort({ timestamp: 1 }); // Sort messages by timestamp
+    
+            socket.emit('previous messages', messages); // Send messages to the client
+        } catch (err) {
+            console.error('Error during join group:', err.message);
+        }
     });
+    
 
     socket.on('disconnect', () => {
         console.log(`A user disconnected: ${socket.id}`);
@@ -60,14 +80,21 @@ io.on('connection', (socket) => {
 
     socket.on('chat message', async (data) => {
         console.log('Message received:', data); // Log received message
-
+    
         const { content, user, group, timestamp } = data;
-
+    
         try {
             // Validate ObjectId conversion
             const validUserId = new mongoose.Types.ObjectId(user._id);
             const validGroupId = new mongoose.Types.ObjectId(group._id);
-
+    
+            // Check if the group exists
+            const groupExists = await Group.findById(validGroupId);
+            if (!groupExists) {
+                console.error(`Group with ID ${group._id} does not exist.`);
+                return;
+            }
+    
             // Save the message to MongoDB
             const newMessage = new Message({
                 content,
@@ -75,16 +102,26 @@ io.on('connection', (socket) => {
                 group: validGroupId,
                 timestamp: timestamp || new Date(),
             });
-
+    
             const savedMessage = await newMessage.save();
             console.log('Message saved successfully:', savedMessage);
-
-            // Emit the message to all clients in the group
-            io.to(validGroupId.toString()).emit('chat message', savedMessage);
+    
+            // Broadcast the message to the group
+            io.to(validGroupId.toString()).emit('chat message', {
+                _id: savedMessage._id,
+                content: savedMessage.content,
+                user: {
+                    _id: savedMessage.user,
+                    name: user.name, // Include user's name in the broadcast
+                },
+                group: savedMessage.group,
+                timestamp: savedMessage.timestamp,
+            });
         } catch (err) {
             console.error('Error saving message:', err.message);
         }
     });
+    
 });
 
 const { PORT } = require('./config/server_config');
