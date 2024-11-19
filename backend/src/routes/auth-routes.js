@@ -52,21 +52,22 @@ router.get('/groups/:userId', async (req, res) => {
 
 router.get('/messages/:groupId', async (req, res) => {
   try {
-      const groupId = new mongoose.Types.ObjectId(req.params.groupId); 
-      const messages = await Message.find({ group: groupId })
-          .populate('user', 'name') 
-          .sort({ timestamp: 'asc' }); 
+    const groupId = new mongoose.Types.ObjectId(req.params.groupId); 
+    const messages = await Message.find({ group: groupId })
+      .populate('user', 'name')  // Assuming 'user' is the reference field in your Message model
+      .sort({ timestamp: 'asc' }); 
 
-      if (!messages.length) {
-          return res.status(404).json({ error: 'No messages found for this group.' });
-      }
+    if (!messages.length) {
+      return res.status(404).json({ error: 'No messages found for this group.' });
+    }
 
-      res.json(messages);
+    res.json(messages);
   } catch (error) {
-      console.error('Error fetching messages:', error);
-      res.status(500).json({ error: 'Error fetching messages' });
+    console.error('Error fetching messages:', error);
+    res.status(500).json({ error: 'Error fetching messages' });
   }
 });
+
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
