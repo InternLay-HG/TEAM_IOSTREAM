@@ -3,6 +3,7 @@ import 'package:annonify/controller/app/avatar_controller.dart';
 import 'package:annonify/controller/chat/chat_controller.dart';
 import 'package:annonify/controller/app/theme_controller.dart';
 import 'package:annonify/models/group_model.dart';
+import 'package:annonify/services/chat_service.dart';
 import 'package:annonify/view/Widgets/ellipsis_text.dart';
 import 'package:annonify/view/screens/chat/widgets/chat_bubble.dart';
 import 'package:flutter/material.dart';
@@ -23,11 +24,10 @@ class _ChatScreenState extends State<ChatScreen>
   late Animation<Offset> _appBarAnimation;
   late Animation<Offset> _bodyAnimation;
   final Group group = Get.arguments;
-  late IO.Socket socket;
-  List<String> messages = [];
-  final List<String> joinedGroups = <String>[];
 
-  // final ChatSocketService _chatSocketService = Get.put(ChatSocketService());
+  final controller = Get.put(ChatController());
+  final ThemeController themeController = Get.find<ThemeController>();
+  final SocketService _chatSocketService = Get.put(SocketService());
 
   @override
   void initState() {
@@ -52,17 +52,12 @@ class _ChatScreenState extends State<ChatScreen>
       parent: _animationController,
       curve: Curves.easeOut,
     ));
-
-    // Start animations when the screen is built
     _animationController.forward();
 
-    // Listen to incoming messages and update UI
-    // _chatSocketService.socket.on('chat message', (msg) {
-    //   print(msg);
-    //   setState(() {
-    //     messages.add(msg);
-    //   });
-    // });
+    // Add listener to scroll to bottom whenever messages are updated
+    _chatSocketService.messages.listen((_) {
+      controller.scrollToBottom();
+    });
   }
 
   @override
@@ -77,9 +72,6 @@ class _ChatScreenState extends State<ChatScreen>
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ChatController());
-    final ThemeController themeController = Get.find<ThemeController>();
-
     return PopScope(
       onPopInvokedWithResult: _onPop,
       child: Scaffold(
@@ -110,12 +102,17 @@ class _ChatScreenState extends State<ChatScreen>
                       height: double.infinity,
                     ),
                     // Add chat messages or other content here
-                    ListView.builder(
-                      itemCount: messages.length,
-                      itemBuilder: (context, index) {
-                        return SentMessage(message: messages[index]);
-                      },
-                    )
+                    Obx(
+                      () => ListView.builder(
+                        controller: controller.scrollController,
+                        itemCount: _chatSocketService.messages.length,
+                        itemBuilder: (context, index) {
+                          return SentMessage(
+                              message: _chatSocketService.messages[index]
+                                  ['content']);
+                        },
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -161,14 +158,12 @@ class _ChatScreenState extends State<ChatScreen>
                     ),
                     IconButton(
                       onPressed: () {
-                        // Handle send action
-                        // _chatSocketService.sendMessage(
-                        //     group.name, controller.messageController.text);
-                        // setState(() {
-                        //   messages.add(controller.messageController.text);
-                        // });
-                        // // controller
-                        //     .addMessage(controller.messageController.text);
+                        _chatSocketService.sendMessage(
+                            controller.messageController.text,
+                            '673482cfb9a43a6672046461',
+                            '673493b8e470a36c5dbcbc60');
+                        controller.clearMessage();
+                        // _scrollToBottom();
                       },
                       icon: const Icon(
                         Icons.send,
