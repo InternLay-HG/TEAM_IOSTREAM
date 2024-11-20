@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { MdAlternateEmail, MdOutlineRemoveRedEye } from "react-icons/md";
-import image from "./info.jpg"; 
+import image from "./info.jpg";
 
 function LoginPage({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async () => {
     try {
@@ -19,7 +20,7 @@ function LoginPage({ onLogin }) {
 
       if (response.ok) {
         const data = await response.json();
-        onLogin(data); // Pass user data or token to parent component
+        onLogin(data.data); // Pass user data (including userId) to parent component
       } else {
         const errorData = await response.json();
         setError(errorData.message || "Login failed. Please try again.");
@@ -51,13 +52,16 @@ function LoginPage({ onLogin }) {
 
         <div className="relative mb-6 w-full">
           <input 
-            type="password" 
+            type={showPassword ? "text" : "password"}
             placeholder="Password" 
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="input-field border-b border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 px-4 py-2 w-full bg-transparent pr-10" 
           />
-          <MdOutlineRemoveRedEye className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-xl" />
+          <MdOutlineRemoveRedEye 
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-xl cursor-pointer"
+            onClick={() => setShowPassword(!showPassword)} 
+          />
         </div>
 
         <button 
