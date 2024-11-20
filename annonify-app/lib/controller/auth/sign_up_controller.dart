@@ -49,7 +49,7 @@ class SignUpController extends GetxController {
         final responseData = json.decode(response.body);
         Get.snackbar("Success", "Signup successful!");
         //  navigate to the login screen
-        Get.offAllNamed('/home');
+        Get.offAllNamed('/signin');
       } else {
         final error = json.decode(response.body);
         Get.snackbar("Error", error['message'] ?? "Signup failed");
@@ -61,10 +61,10 @@ class SignUpController extends GetxController {
 
   @override
   void onClose() {
-    emailController.dispose();
-    nameController.dispose();
-    passwordController.dispose();
-    confPassController.dispose();
+    // emailController.dispose();
+    // nameController.dispose();
+    // passwordController.dispose();
+    // confPassController.dispose();
     super.onClose();
   }
 }

@@ -116,4 +116,7 @@ ThemeData lightTheme = ThemeData(
     backgroundColor: LightThemeColors.accentColor,
     shape: CircleBorder(),
   ),
+  progressIndicatorTheme: const ProgressIndicatorThemeData(
+    color: LightThemeColors.accentColor,
+  ),
 );

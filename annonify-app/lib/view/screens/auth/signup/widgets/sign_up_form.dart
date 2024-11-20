@@ -28,6 +28,7 @@ class SignUpForm extends StatelessWidget {
               ),
               validator: (value) => Validator.validateEmail(value),
             ),
+            const SizedBox(height: 15),
             TextFormField(
               cursorColor: themeController.textHeading,
               controller: controller.nameController,
@@ -81,7 +82,7 @@ class SignUpForm extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  Get.toNamed('/chooseAvatar');
+                  controller.signUp();
                 },
                 style: const ButtonStyle(
                   padding: WidgetStatePropertyAll(
@@ -90,19 +91,6 @@ class SignUpForm extends StatelessWidget {
                 child: const Text("SIGN UP"),
               ),
             ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Flexible(child: Text("Already have an account?")),
-                TextButton(
-                  onPressed: () {
-                    Get.offNamed('/signin');
-                  },
-                  child: const Text("NEXT"),
-                )
-              ],
-            )
           ],
         ),
       ),

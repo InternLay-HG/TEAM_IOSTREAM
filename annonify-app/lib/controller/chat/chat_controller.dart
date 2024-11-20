@@ -1,3 +1,4 @@
+import 'package:annonify/services/auth_service.dart';
 import 'package:annonify/services/chat_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -16,12 +17,13 @@ class ChatController extends GetxController {
 
   final SocketService _socketService = Get.find<SocketService>();
 
+  final AuthService authService = Get.find<AuthService>();
+  String? userId;
+
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
-    _socketService.connectToSocket(
-        '673482cfb9a43a6672046461', '673493b8e470a36c5dbcbc60');
-    _socketService.joinGroup('673493b8e470a36c5dbcbc60');
+    userId = (await authService.getUserId());
   }
 
   void clearSearchQuery() {
@@ -38,8 +40,8 @@ class ChatController extends GetxController {
   void scrollToBottom() {
     if (scrollController.hasClients) {
       scrollController.animateTo(
-        scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
+        scrollController.position.extentTotal,
+        duration: const Duration(milliseconds: 100),
         curve: Curves.easeOut,
       );
     }

@@ -2,10 +2,7 @@ import 'package:annonify/configs/Theme/colors.dart';
 import 'package:annonify/controller/app/avatar_controller.dart';
 import 'package:annonify/controller/app/home_page_controller.dart';
 import 'package:annonify/controller/app/theme_controller.dart';
-import 'package:annonify/view/screens/home/blog/blogs.dart';
 import 'package:annonify/view/screens/home/blog/widgets/add_blog.dart';
-import 'package:annonify/view/screens/home/chats/all_chats.dart';
-import 'package:annonify/view/screens/home/links/links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -60,7 +57,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       onPopInvokedWithResult: _onPop,
       child: Obx(
         () => (avatarController.avatars.isEmpty)
-            ? Scaffold(body: Center(child: const CircularProgressIndicator()))
+            ? const Scaffold(body: Center(child: CircularProgressIndicator()))
             : Scaffold(
                 appBar: PreferredSize(
                   preferredSize: const Size.fromHeight(120),
@@ -82,14 +79,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ),
                     child: TabBarView(
                       controller: _controller.tabController,
-                      children: _controller.screens,
+                      children: _controller.screens.isNotEmpty
+                          ? _controller.screens
+                          : [const Center(child: CircularProgressIndicator())],
                     ),
                   ),
                 ),
                 floatingActionButton: (_controller.currentIndex.value == 1)
                     ? FloatingActionButton(
                         onPressed: () {
-                          Get.dialog(AddBlogDialog());
+                          Get.dialog(const AddBlogDialog());
                         },
                         child: const Icon(Icons.post_add),
                       )
@@ -101,12 +100,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 }
 
 Widget _buildAppBar(BuildContext context, TabController tabController,
-    HomePageController searchBarController) {
+    HomePageController controller) {
   final themeController = Get.find<ThemeController>();
 
   return Obx(() => AppBar(
         // toolbarHeight: 64,
-        title: searchBarController.isSearching.value
+        title: controller.isSearching.value
             ? AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
                 transitionBuilder: (Widget child, Animation<double> animation) {
@@ -120,7 +119,7 @@ Widget _buildAppBar(BuildContext context, TabController tabController,
                 },
                 child: TextField(
                   key: const ValueKey('searchBar'),
-                  controller: searchBarController.controller,
+                  controller: controller.controller,
                   cursorColor: themeController.secondaryTextColor,
                   autofocus: true,
                   decoration: const InputDecoration(
@@ -156,15 +155,15 @@ Widget _buildAppBar(BuildContext context, TabController tabController,
             );
           },
           child: IconButton(
-            key: ValueKey(searchBarController.isSearching.value),
+            key: ValueKey(controller.isSearching.value),
             icon: Icon(
-              searchBarController.isSearching.value
+              controller.isSearching.value
                   ? Icons.arrow_back_ios_new
                   : Icons.search,
               color: DarkThemeColors.accentColor,
             ),
             onPressed: () {
-              searchBarController.toggleSearch();
+              controller.toggleSearch();
             },
           ),
         ),
@@ -179,20 +178,30 @@ Widget _buildAppBar(BuildContext context, TabController tabController,
                   child: FadeTransition(opacity: animation, child: child),
                 );
               },
-              child: searchBarController.isSearching.value
+              child: controller.isSearching.value
                   ? IconButton(
                       key: const ValueKey('clearButton'),
                       onPressed: () {
-                        searchBarController.clearSearchQuery();
+                        controller.clearSearchQuery();
                       },
                       icon: const Icon(Icons.clear),
                     )
-                  : InkWell(
-                      key: const ValueKey('logo'),
-                      onTap: () {
-                        themeController.toggleTheme();
-                      },
-                      child: _avatar(),
+                  : Row(
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            themeController.toggleTheme();
+                          },
+                          icon: Icon((themeController.isDark.value)
+                              ? Icons.dark_mode
+                              : Icons.light_mode),
+                        ),
+                        InkWell(
+                          key: const ValueKey('logo'),
+                          onTap: () {},
+                          child: _avatar(),
+                        ),
+                      ],
                     ),
             ),
           ),

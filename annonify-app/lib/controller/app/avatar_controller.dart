@@ -8,12 +8,20 @@ class AvatarController extends GetxController {
   // Observable list of avatars
   final avatars = <Avatar>[].obs;
 
+  final RxString selectedAvatar = "".obs;
+
   AvatarController(this.avatarRepository);
 
   @override
   void onInit() {
     super.onInit();
-    fetchAvatars();
+    if (avatars.isEmpty) {
+      fetchAvatars();
+    }
+  }
+
+  void selectAvatar(String name) {
+    selectedAvatar.value = name;
   }
 
   Future<void> fetchAvatars() async {

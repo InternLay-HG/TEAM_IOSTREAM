@@ -1,6 +1,7 @@
 import 'package:annonify/view/screens/auth/signup/widgets/sign_up_form.dart';
 import 'package:annonify/view/widgets/sample.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SignUpPage extends StatelessWidget {
   const SignUpPage({super.key});
@@ -31,6 +32,19 @@ class SignUpPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     const SignUpForm(),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Flexible(child: Text("Already have an account?")),
+                        TextButton(
+                          onPressed: () {
+                            Get.offAllNamed('/signin');
+                          },
+                          child: const Text("NEXT"),
+                        )
+                      ],
+                    ),
                   ],
                 ),
               ),

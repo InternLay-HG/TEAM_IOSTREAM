@@ -45,7 +45,6 @@ class SocketService extends GetxController {
       'content': content,
       'user': {
         '_id': userId,
-        'name': 'User Name', // Replace with actual user name
       },
       'group': {
         '_id': groupId,
