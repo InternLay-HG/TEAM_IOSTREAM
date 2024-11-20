@@ -4,6 +4,7 @@ import 'package:annonify/configs/routes/app_router.dart';
 import 'package:annonify/controller/app/avatar_controller.dart';
 import 'package:annonify/controller/app/theme_controller.dart';
 import 'package:annonify/repositories/avatar_repo.dart';
+import 'package:annonify/services/chat_service.dart';
 import 'package:annonify/view/screens/auth/signIn/sign_in.dart';
 import 'package:annonify/view/screens/home/home.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'package:get/get.dart';
 void main() async {
   await dotenv.load(fileName: ".env");
   Get.put(AvatarController(AvatarRepository()));
+  Get.put(SocketService());
   runApp(const MyApp());
 }
 

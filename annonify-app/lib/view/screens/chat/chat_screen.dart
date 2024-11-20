@@ -27,7 +27,7 @@ class _ChatScreenState extends State<ChatScreen>
 
   final controller = Get.put(ChatController());
   final ThemeController themeController = Get.find<ThemeController>();
-  final SocketService _chatSocketService = Get.put(SocketService());
+  final SocketService _chatSocketService = Get.find<SocketService>();
 
   @override
   void initState() {
@@ -58,11 +58,14 @@ class _ChatScreenState extends State<ChatScreen>
     _chatSocketService.messages.listen((_) {
       controller.scrollToBottom();
     });
+    controller.scrollToBottom();
   }
 
   @override
   void dispose() {
     _animationController.dispose();
+    _chatSocketService.dispose();
+    controller.dispose();
     super.dispose();
   }
 
