@@ -22,14 +22,14 @@ function Sidebar({ userAvatar, onNavigateToBlog, onNavigateToChat, onNavigateToA
               <PiChatsBold size={24} />
               <span className="text-sm mt-2 font-roboto-mono">ALL CHATS</span>
             </div>
-            <div className="flex flex-col items-center text-blue-500 hover:text-white cursor-pointer">
+            {/* <div className="flex flex-col items-center text-blue-500 hover:text-white cursor-pointer">
               <MdOutlinePermMedia size={24} />
               <span className="text-sm mt-2 font-roboto-mono">MEDIA</span>
-            </div>
-            <div className="flex flex-col items-center text-blue-500 hover:text-white cursor-pointer">
+            </div> */}
+            {/* <div className="flex flex-col items-center text-blue-500 hover:text-white cursor-pointer">
               <IoLinkSharp size={24} />
               <span className="text-sm mt-2 font-roboto-mono">LINKS</span>
-            </div>
+            </div> */}
             <div
               className="flex flex-col items-center text-blue-500 hover:text-white cursor-pointer"
               onClick={onNavigateToBlog} // Call function to navigate to BlogPage
