@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:annonify/configs/Theme/colors.dart';
 import 'package:annonify/controller/app/avatar_controller.dart';
@@ -6,7 +5,6 @@ import 'package:annonify/controller/app/theme_controller.dart';
 import 'package:annonify/controller/blog/blog_controller.dart';
 import 'package:annonify/models/blog/post_model.dart';
 import 'package:annonify/view/screens/home/blog/widgets/comment.dart';
-import 'package:annonify/view/screens/home/blog/widgets/post.dart';
 import 'package:annonify/view/screens/home/blog/widgets/post_image.dart';
 import 'package:annonify/view/widgets/ellipsis_text.dart';
 import 'package:flutter/material.dart';

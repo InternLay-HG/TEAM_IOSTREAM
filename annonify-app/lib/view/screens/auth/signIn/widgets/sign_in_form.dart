@@ -53,7 +53,7 @@ class SignInForm extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  Get.offAllNamed('/home');
+                  controller.signin();
                 },
                 style: const ButtonStyle(
                   padding: WidgetStatePropertyAll(
@@ -62,19 +62,6 @@ class SignInForm extends StatelessWidget {
                 child: const Text("SIGN IN"),
               ),
             ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Flexible(child: Text("Don't have an account?")),
-                TextButton(
-                  onPressed: () {
-                    Get.offNamed('/signup');
-                  },
-                  child: const Text("CREATE  ONE"),
-                )
-              ],
-            )
           ],
         ),
       ),

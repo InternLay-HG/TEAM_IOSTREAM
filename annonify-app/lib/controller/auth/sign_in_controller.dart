@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:annonify/services/auth_service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -18,6 +19,8 @@ class SignInController extends GetxController {
 
   String? server = dotenv.env['uri'];
 
+  final AuthService authService = Get.find<AuthService>();
+
   Future<void> signin() async {
     final Map<String, String> body = {
       'email': emailController.text,
@@ -34,9 +37,22 @@ class SignInController extends GetxController {
       );
 
       if (response.statusCode == 200) {
-        // Handle success (e.g., parse the response or navigate to another screen)
-        Get.snackbar("Success", "Sign in successful.");
-        Get.offAllNamed('/home');
+        final responseData = json.decode(response.body);
+        print("login1");
+
+        if (responseData['success']) {
+          print("login2");
+          final userId = responseData['data']['userId'];
+          final token = responseData['data']['token'];
+
+          // Save userId and token
+          await authService.saveLoginData(userId, token);
+
+          Get.snackbar('Success', responseData['message']);
+          Get.offAllNamed('/home'); // Navigate to HomePage
+        } else {
+          Get.snackbar('Error', responseData['message'] ?? 'Login failed');
+        }
       } else {
         // Handle failure
         Get.snackbar("Error", "Invalid credentials or server error.");
@@ -48,8 +64,8 @@ class SignInController extends GetxController {
 
   @override
   void onClose() {
-    emailController.dispose();
-    passwordController.dispose();
+    // emailController.dispose();
+    // passwordController.dispose();
     super.onClose();
   }
 }

@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:annonify/controller/app/avatar_controller.dart';
 import 'package:annonify/controller/app/theme_controller.dart';
@@ -45,7 +44,6 @@ class Post extends StatelessWidget {
             const SizedBox(height: 10),
 
             //Post Image
-            // if (post.image != null) Image.file(File(post.image.toString())),
             if (post.image != null) PostImage(post: post),
 
             // Post Title
@@ -70,7 +68,7 @@ class Post extends StatelessWidget {
               children: [
                 PostButton(
                   onTap: () {
-                    controller.like(post.id!);
+                    if (post.id != null) controller.like(post.id!);
                   },
                   icon: Icons.favorite_border,
                   text: post.likes.toString(),

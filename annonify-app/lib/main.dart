@@ -4,17 +4,21 @@ import 'package:annonify/configs/routes/app_router.dart';
 import 'package:annonify/controller/app/avatar_controller.dart';
 import 'package:annonify/controller/app/theme_controller.dart';
 import 'package:annonify/repositories/avatar_repo.dart';
+import 'package:annonify/services/auth_service.dart';
 import 'package:annonify/services/chat_service.dart';
-import 'package:annonify/view/screens/auth/signIn/sign_in.dart';
-import 'package:annonify/view/screens/home/home.dart';
+import 'package:annonify/view/screens/splash/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
+
+import 'controller/chat/chat_controller.dart';
 
 void main() async {
   await dotenv.load(fileName: ".env");
   Get.put(AvatarController(AvatarRepository()));
   Get.put(SocketService());
+  Get.put(AuthService());
+  Get.put(ChatController());
   runApp(const MyApp());
 }
 
@@ -32,7 +36,7 @@ class MyApp extends StatelessWidget {
         theme: lightTheme,
         darkTheme: darkTheme,
         getPages: AppRouter.routes,
-        home: const HomePage(),
+        home: const SplashScreen(),
       );
     });
   }

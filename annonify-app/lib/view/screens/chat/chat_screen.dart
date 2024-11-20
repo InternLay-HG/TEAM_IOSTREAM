@@ -9,7 +9,6 @@ import 'package:annonify/view/screens/chat/widgets/chat_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -25,13 +24,22 @@ class _ChatScreenState extends State<ChatScreen>
   late Animation<Offset> _bodyAnimation;
   final Group group = Get.arguments;
 
-  final controller = Get.put(ChatController());
+  // final controller = Get.put(ChatController());
+  final controller = Get.find<ChatController>();
   final ThemeController themeController = Get.find<ThemeController>();
   final SocketService _chatSocketService = Get.find<SocketService>();
 
   @override
   void initState() {
     super.initState();
+    _chatSocketService.connectToSocket(controller.userId!, group.id);
+    _chatSocketService.joinGroup(group.id);
+
+    // Add listener to scroll to bottom whenever messages are updated
+    _chatSocketService.messages.listen((_) {
+      controller.scrollToBottom();
+    });
+    controller.scrollToBottom();
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
@@ -53,19 +61,12 @@ class _ChatScreenState extends State<ChatScreen>
       curve: Curves.easeOut,
     ));
     _animationController.forward();
-
-    // Add listener to scroll to bottom whenever messages are updated
-    _chatSocketService.messages.listen((_) {
-      controller.scrollToBottom();
-    });
-    controller.scrollToBottom();
   }
 
   @override
   void dispose() {
     _animationController.dispose();
-    _chatSocketService.dispose();
-    controller.dispose();
+    // controller.dispose();
     super.dispose();
   }
 
@@ -75,6 +76,7 @@ class _ChatScreenState extends State<ChatScreen>
 
   @override
   Widget build(BuildContext context) {
+    final userId = controller.userId;
     return PopScope(
       onPopInvokedWithResult: _onPop,
       child: Scaffold(
@@ -110,9 +112,12 @@ class _ChatScreenState extends State<ChatScreen>
                         controller: controller.scrollController,
                         itemCount: _chatSocketService.messages.length,
                         itemBuilder: (context, index) {
-                          return SentMessage(
-                              message: _chatSocketService.messages[index]
-                                  ['content']);
+                          final message = _chatSocketService.messages[index];
+                          return (message['user']['_id'] == userId)
+                              ? SentMessage(
+                                  message: message['content'],
+                                )
+                              : ReceiveMessage(message: message['content']);
                         },
                       ),
                     ),
@@ -163,10 +168,9 @@ class _ChatScreenState extends State<ChatScreen>
                       onPressed: () {
                         _chatSocketService.sendMessage(
                             controller.messageController.text,
-                            '673482cfb9a43a6672046461',
-                            '673493b8e470a36c5dbcbc60');
+                            userId!,
+                            group.id);
                         controller.clearMessage();
-                        // _scrollToBottom();
                       },
                       icon: const Icon(
                         Icons.send,
