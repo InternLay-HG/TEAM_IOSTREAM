@@ -14,7 +14,7 @@ class HomePageController extends GetxController
   final screens = [
     const AllChats(),
     const Blogs(),
-    const Links(),
+    // const Links(),
   ];
   late TabController tabController;
 

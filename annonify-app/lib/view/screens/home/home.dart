@@ -216,7 +216,7 @@ Widget _buildAppBar(BuildContext context, TabController tabController,
           tabs: const [
             Text("All Chats"),
             Text("Blogs"),
-            Text("Links"),
+            // Text("Links"),
           ],
         ),
       ));
