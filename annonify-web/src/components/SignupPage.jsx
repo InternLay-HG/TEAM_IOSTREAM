@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import { MdDriveFileRenameOutline, MdAlternateEmail, MdOutlineRemoveRedEye } from "react-icons/md";
+import { MdDriveFileRenameOutline, MdAlternateEmail, MdOutlineRemoveRedEye, MdVisibilityOff } from "react-icons/md";
 import image from "./info.jpg";
 
-function SignupPage({ onSignup, selectedAvatar }) {
+function SignupPage({ onSignup, selectedAvatar, onLoginClick }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [name, setName] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -20,7 +22,7 @@ function SignupPage({ onSignup, selectedAvatar }) {
       email,
       password,
       name,
-      avatar: selectedAvatar, // Include selected avatar here
+      avatar: selectedAvatar,
     };
 
     try {
@@ -40,7 +42,7 @@ function SignupPage({ onSignup, selectedAvatar }) {
 
         // Store userId in localStorage
         localStorage.setItem("userId", data.userId);
-        onSignup(); // Redirect to next step
+        onSignup(); // Redirect to chat
       } else {
         console.error("Signup failed:", data);
         alert("Signup failed! Please try again.");
@@ -71,24 +73,34 @@ function SignupPage({ onSignup, selectedAvatar }) {
 
           <div className="relative mb-6 w-full">
             <input 
-              type="password" 
+              type={passwordVisible ? "text" : "password"} 
               placeholder="Password" 
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="input-field border-b border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 px-4 py-2 w-full bg-transparent pr-10"
             />
-            <MdOutlineRemoveRedEye className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-xl" />
+            <span 
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-xl cursor-pointer"
+              onClick={() => setPasswordVisible(!passwordVisible)}
+            >
+              {passwordVisible ? <MdOutlineRemoveRedEye /> : <MdVisibilityOff />}
+            </span>
           </div>
 
           <div className="relative mb-6 w-full">
             <input 
-              type="password" 
+              type={confirmPasswordVisible ? "text" : "password"} 
               placeholder="Confirm Password" 
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               className="input-field border-b border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 px-4 py-2 w-full bg-transparent pr-10"
             />
-            <MdOutlineRemoveRedEye className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-xl" />
+            <span 
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-xl cursor-pointer"
+              onClick={() => setConfirmPasswordVisible(!confirmPasswordVisible)}
+            >
+              {confirmPasswordVisible ? <MdOutlineRemoveRedEye /> : <MdVisibilityOff />}
+            </span>
           </div>
 
           <div className="relative mb-6 w-full">
@@ -111,7 +123,13 @@ function SignupPage({ onSignup, selectedAvatar }) {
         </form>
 
         <p className="text-gray-400 mt-6 text-center">
-          Already have an account? <span className="text-blue-500 cursor-pointer">LOGIN</span>
+          Already have an account?{" "}
+          <span 
+            className="text-blue-500 cursor-pointer" 
+            onClick={onLoginClick} // Redirect to login page
+          >
+            LOGIN
+          </span>
         </p>
       </div>
 

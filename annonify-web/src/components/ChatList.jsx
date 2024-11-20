@@ -1,31 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 import "./ChatList.css";
 
-function ChatList({ onSelectChat }) {
+function ChatList({ userId, onSelectChat }) {
   const [selectedChat, setSelectedChat] = useState(null);
+  const [chatGroups, setChatGroups] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // List of group names
-  const chatGroups = [
-    { id: 1, name: "HOUSE OF GEEKS", lastMessage: "Last message in chat..." },
-    { id: 2, name: "SPORTS SOCIETY", lastMessage: "Last message in chat..." },
-    { id: 3, name: "HOSTEL COMMITTEE", lastMessage: "Last message in chat..." },
-    { id: 4, name: "MESS COMMITTEE", lastMessage: "Last message in chat..." },
-    { id: 5, name: "E-CELL", lastMessage: "Last message in chat..." },
-    { id: 6, name: "SAAZ", lastMessage: "Last message in chat..." },
-    { id: 7, name: "RANGBAAZ", lastMessage: "Last message in chat..." },
-    { id: 8, name: "KIRTI", lastMessage: "Last message in chat..." },
-    { id: 9, name: "CONFESSION GROUP", lastMessage: "Last message in chat..." },
-    { id: 10, name: "1ST YEAR", lastMessage: "Last message in chat..." },
-    { id: 11, name: "2ND YEAR", lastMessage: "Last message in chat..." },
-    { id: 12, name: "3RD YEAR", lastMessage: "Last message in chat..." },
-    { id: 13, name: "4TH YEAR", lastMessage: "Last message in chat..." },
-  ];
+  useEffect(() => {
+    const fetchGroups = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/api/groups/${userId}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch groups");
+        }
+        const data = await response.json();
+        setChatGroups(data); // Set the fetched groups
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (userId) {
+      fetchGroups(); // Fetch groups when userId changes
+    }
+  }, [userId]);
 
   const handleSelectChat = (chat) => {
-    setSelectedChat(chat.id); // Update selected chat
+    setSelectedChat(chat._id); // Update selected chat with the group ID
     onSelectChat(chat); // Pass the selected chat to the parent
   };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <div className="w-[30%] h-full overflow-y-auto bg-black text-gray-400">
@@ -44,19 +54,19 @@ function ChatList({ onSelectChat }) {
       <div className="space-y-4 p-4">
         {chatGroups.map((chat) => (
           <div
-            key={chat.id}
+            key={chat._id}
             className={`flex items-center p-4 rounded cursor-pointer min-h-[80px] 
-              ${selectedChat === chat.id ? "bg-[#1a1a1a]" : "hover:bg-[#2c2c2c]"}`}
+              ${selectedChat === chat._id ? "bg-[#1a1a1a]" : "hover:bg-[#2c2c2c]"}`}
             onClick={() => handleSelectChat(chat)}
           >
             <img
-              src={`https://via.placeholder.com/50?text=User+${chat.id}`}
-              alt={`User ${chat.id}`}
-              className="w-12 h-12 rounded-lg"
+              src={`https://via.placeholder.com/50?text=Group+${chat.name}`}
+            alt={chat.name}
+            className="w-12 h-12 rounded-lg"
             />
             <div className="ml-4">
               <h4 className="text-white font-semibold font-roboto-mono">{chat.name}</h4>
-              <p className="text-gray-500 text-sm font-roboto-mono">{chat.lastMessage}</p>
+              <p className="text-gray-500 text-sm font-roboto-mono">Last message in chat...</p>
             </div>
           </div>
         ))}

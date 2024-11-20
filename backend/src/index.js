@@ -79,12 +79,11 @@ io.on('connection', (socket) => {
     });
 
     socket.on('chat message', async (data) => {
-        console.log('Message received:', data); // Log received message
+        console.log('Message received:', data);
     
         const { content, user, group, timestamp } = data;
     
         try {
-            // Validate ObjectId conversion
             const validUserId = new mongoose.Types.ObjectId(user._id);
             const validGroupId = new mongoose.Types.ObjectId(group._id);
     
@@ -92,6 +91,13 @@ io.on('connection', (socket) => {
             const groupExists = await Group.findById(validGroupId);
             if (!groupExists) {
                 console.error(`Group with ID ${group._id} does not exist.`);
+                return;
+            }
+    
+            // Fetch the latest user details
+            const userDetails = await User.findById(validUserId, 'name');
+            if (!userDetails) {
+                console.error(`User with ID ${user._id} not found.`);
                 return;
             }
     
@@ -106,13 +112,13 @@ io.on('connection', (socket) => {
             const savedMessage = await newMessage.save();
             console.log('Message saved successfully:', savedMessage);
     
-            // Broadcast the message to the group
+            // Broadcast the message to the group with the latest user data
             io.to(validGroupId.toString()).emit('chat message', {
                 _id: savedMessage._id,
                 content: savedMessage.content,
                 user: {
                     _id: savedMessage.user,
-                    name: user.name, // Include user's name in the broadcast
+                    name: userDetails.name, // Updated user name
                 },
                 group: savedMessage.group,
                 timestamp: savedMessage.timestamp,
@@ -121,6 +127,7 @@ io.on('connection', (socket) => {
             console.error('Error saving message:', err.message);
         }
     });
+    
     
 });
 
