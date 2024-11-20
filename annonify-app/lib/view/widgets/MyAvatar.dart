@@ -69,8 +69,8 @@ class _ChatAvatarState extends State<ChatAvatar> {
     final avatar = avatarController.getAvatarByName(userAvatar!);
 
     return Container(
-      height: 40,
-      width: 40,
+      height: 35,
+      width: 35,
       decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.all(

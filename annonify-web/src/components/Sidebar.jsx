@@ -4,8 +4,9 @@ import { IoLinkSharp } from "react-icons/io5";
 import { MdOutlinePermMedia } from "react-icons/md";
 import { IoSettingsOutline } from "react-icons/io5";
 import { FaBlog } from "react-icons/fa";
+import { BiTask } from "react-icons/bi"; // Importing an icon for Assignments
 
-function Sidebar({ userAvatar, onNavigateToBlog, onNavigateToChat }) {
+function Sidebar({ userAvatar, onNavigateToBlog, onNavigateToChat, onNavigateToAssignments }) {
   return (
     <aside className="w-[8%] bg-[#1a1a1a] text-gray-300 flex flex-col justify-between">
       <div>
@@ -36,6 +37,13 @@ function Sidebar({ userAvatar, onNavigateToBlog, onNavigateToChat }) {
               <FaBlog size={24} />
               <span className="text-sm mt-2 font-roboto-mono">BLOGS</span>
             </div>
+            <div
+              className="flex flex-col items-center text-blue-500 hover:text-white cursor-pointer"
+              onClick={onNavigateToAssignments} // Call function to navigate to AssignmentsPage
+            >
+              <BiTask size={24} />
+              <span className="text-sm mt-2 font-roboto-mono">ASSIGNMENTS</span>
+            </div>
           </nav>
         </div>
       </div>
@@ -47,7 +55,7 @@ function Sidebar({ userAvatar, onNavigateToBlog, onNavigateToChat }) {
         <div>
           <img
             src={userAvatar}
-            alt="User Avatar"
+            alt="User  Avatar"
             className="rounded-full w-20 h-20"
           />
         </div>
