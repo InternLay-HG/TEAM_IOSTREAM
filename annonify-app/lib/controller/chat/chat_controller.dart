@@ -15,8 +15,6 @@ class ChatController extends GetxController {
     if (!isSearching.value) searchQuery.value = '';
   }
 
-  final SocketService _socketService = Get.find<SocketService>();
-
   final AuthService authService = Get.find<AuthService>();
   String? userId;
 

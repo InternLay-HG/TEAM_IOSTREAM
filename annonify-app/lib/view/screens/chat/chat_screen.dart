@@ -109,15 +109,29 @@ class _ChatScreenState extends State<ChatScreen>
                     // Add chat messages or other content here
                     Obx(
                       () => ListView.builder(
-                        controller: controller.scrollController,
                         itemCount: _chatSocketService.messages.length,
                         itemBuilder: (context, index) {
                           final message = _chatSocketService.messages[index];
+                          final nextMessage =
+                              index + 1 < _chatSocketService.messages.length
+                                  ? _chatSocketService.messages[index + 1]
+                                  : null;
+                          final nextUserId = nextMessage?['user']
+                              ['_id']; // Get the next message's userId
+
                           return (message['user']['_id'] == userId)
                               ? SentMessage(
                                   message: message['content'],
+                                  userId: message['user']['_id'],
+                                  nextUserId:
+                                      nextUserId, // Pass the nextUserId to SentMessage
                                 )
-                              : ReceiveMessage(message: message['content']);
+                              : ReceiveMessage(
+                                  message: message['content'],
+                                  userId: message['user']['_id'],
+                                  nextUserId:
+                                      nextUserId, // Pass the nextUserId to ReceiveMessage
+                                );
                         },
                       ),
                     ),

@@ -1,5 +1,7 @@
 import 'package:annonify/configs/Theme/colors.dart';
 import 'package:annonify/controller/app/avatar_controller.dart';
+import 'package:annonify/utils/user.dart';
+import 'package:annonify/view/widgets/MyAvatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -31,34 +33,39 @@ class Triangle extends CustomPainter {
 
 class ReceiveMessage extends StatelessWidget {
   final String message;
+  final String userId;
+  final String? nextUserId; // The userId of the next message (for comparison)
 
   const ReceiveMessage({
     super.key,
     required this.message,
+    required this.userId,
+    this.nextUserId,
   });
 
   @override
   Widget build(BuildContext context) {
-    final AvatarController avatarController = Get.find<AvatarController>();
-
     final messageTextGroup = Flexible(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          CustomPaint(
-            painter: Triangle(LightThemeColors.receiverBubbleColor),
-          ),
+          if (nextUserId != userId)
+            CustomPaint(
+              painter: Triangle(LightThemeColors.receiverBubbleColor),
+            ),
           Flexible(
             child: Container(
               padding: const EdgeInsets.all(14),
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: LightThemeColors.receiverBubbleColor,
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(14),
-                  bottomRight: Radius.circular(14),
-                  topRight: Radius.circular(14),
-                ),
+                    topLeft: const Radius.circular(14),
+                    bottomRight: const Radius.circular(14),
+                    topRight: const Radius.circular(14),
+                    bottomLeft: (nextUserId != userId)
+                        ? Radius.zero
+                        : const Radius.circular(14)),
               ),
               child: Text(
                 message,
@@ -76,7 +83,10 @@ class ReceiveMessage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          _avatar(avatarController),
+          // Show avatar only if the next message is from a different user
+          (nextUserId != userId)
+              ? ChatAvatar(userId: userId)
+              : const SizedBox(width: 40),
           const SizedBox(width: 10),
           messageTextGroup,
         ],
@@ -87,10 +97,14 @@ class ReceiveMessage extends StatelessWidget {
 
 class SentMessage extends StatelessWidget {
   final String message;
+  final String userId;
+  final String? nextUserId; // The userId of the next message (for comparison)
 
   const SentMessage({
     super.key,
     required this.message,
+    required this.userId,
+    this.nextUserId,
   });
 
   @override
@@ -105,12 +119,15 @@ class SentMessage extends StatelessWidget {
           Flexible(
             child: Container(
               padding: const EdgeInsets.all(14),
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: LightThemeColors.senderBubbleColor,
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(14),
-                  bottomLeft: Radius.circular(14),
-                  topRight: Radius.circular(14),
+                  topLeft: const Radius.circular(14),
+                  bottomLeft: const Radius.circular(14),
+                  topRight: const Radius.circular(14),
+                  bottomRight: (nextUserId != userId)
+                      ? Radius.zero
+                      : const Radius.circular(14),
                 ),
               ),
               child: Text(
@@ -119,9 +136,10 @@ class SentMessage extends StatelessWidget {
               ),
             ),
           ),
-          CustomPaint(
-            painter: Triangle(LightThemeColors.senderBubbleColor),
-          ),
+          if (nextUserId != userId)
+            CustomPaint(
+              painter: Triangle(LightThemeColors.senderBubbleColor),
+            ),
         ],
       ),
     );
@@ -132,29 +150,14 @@ class SentMessage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          // (sender)?
           messageTextGroup,
           const SizedBox(width: 10),
-          _avatar(avatarController),
+          // Show avatar only if the next message is from a different user
+          (nextUserId != userId)
+              ? ChatAvatar(userId: userId)
+              : const SizedBox(width: 40),
         ],
       ),
     );
   }
-}
-
-Widget _avatar(AvatarController avatarController) {
-  return Obx(
-    () => Container(
-      height: 40,
-      width: 40,
-      decoration: const BoxDecoration(
-          color: LightThemeColors.contentBG,
-          borderRadius: BorderRadius.all(
-            Radius.circular(8),
-          )),
-      child: avatarController.avatars[0].svgData != null
-          ? SvgPicture.string(avatarController.avatars[0].svgData!)
-          : SvgPicture.asset("assets/images/group_logo.svg"),
-    ),
-  );
 }
