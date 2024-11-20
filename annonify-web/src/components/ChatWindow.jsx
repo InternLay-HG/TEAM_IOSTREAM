@@ -4,7 +4,7 @@ import MessageInput from "./MessageInput";
 import { FaSearch } from "react-icons/fa";
 import { IoMdMore } from "react-icons/io";
 import { PiSquareSplitHorizontal } from "react-icons/pi";
-import windowImage from './background2.jpeg'; // Import the image
+import windowImage from './background4.png'; // Import the image
 
 function ChatWindow({ chat, userId, groupId, toggleDetails }) {
   const [messages, setMessages] = useState([]);
@@ -25,6 +25,10 @@ function ChatWindow({ chat, userId, groupId, toggleDetails }) {
       console.log("Received message from server:", msg);
       setMessages((prevMessages) => [...prevMessages, msg]);
     });
+
+    // socket.current.on('messageBlocked', (data) => {
+    //   alert(`Your message was blocked. Reason: ${data.reason || 'Toxic content'} | Score: ${data.score}`);
+    // });
 
     // Cleanup on unmount
     return () => {

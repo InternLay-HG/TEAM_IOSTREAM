@@ -8,7 +8,7 @@ const passportAuth = require('./config/jwt-middleware');
 const apiRoutes = require('./routes/auth-routes');
 const { Server } = require("socket.io");
 const mongoose = require('mongoose');
-
+const axios = require('axios');
 // Import your models
 const Message = require('./models/message');
 const Group = require('./models/group');
@@ -84,6 +84,15 @@ io.on('connection', (socket) => {
         const { content, user, group, timestamp } = data;
     
         try {
+            const response = await axios.post('http://localhost:5001/check-toxicity', { message: content });
+            const { allowed, reason, score } = response.data;
+
+            // If the message is not allowed, send a blocked message feedback
+            if (!allowed) {
+                socket.emit('messageBlocked', { reason, score });
+                console.log('Message blocked due to toxicity');
+                return; // Prevent further processing of the toxic message
+            }
             const validUserId = new mongoose.Types.ObjectId(user._id);
             const validGroupId = new mongoose.Types.ObjectId(group._id);
     
