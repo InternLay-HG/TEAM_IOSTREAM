@@ -2,7 +2,10 @@ import 'package:annonify/configs/Theme/colors.dart';
 import 'package:annonify/controller/app/avatar_controller.dart';
 import 'package:annonify/controller/app/home_page_controller.dart';
 import 'package:annonify/controller/app/theme_controller.dart';
+import 'package:annonify/services/auth_service.dart';
+import 'package:annonify/utils/user.dart';
 import 'package:annonify/view/screens/home/blog/widgets/add_blog.dart';
+import 'package:annonify/view/widgets/MyAvatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -199,7 +202,8 @@ Widget _buildAppBar(BuildContext context, TabController tabController,
                         InkWell(
                           key: const ValueKey('logo'),
                           onTap: () {},
-                          child: _avatar(),
+                          // child: _avatar(avatarName),
+                          child: MyAvatar(name: controller.userAvatar),
                         ),
                       ],
                     ),
@@ -216,16 +220,4 @@ Widget _buildAppBar(BuildContext context, TabController tabController,
           ],
         ),
       ));
-}
-
-Widget _avatar() {
-  return Obx(() {
-    AvatarController avatarController = Get.find<AvatarController>();
-    return CircleAvatar(
-      backgroundColor: Colors.white,
-      child: avatarController.avatars[0].svgData != null
-          ? SvgPicture.string(avatarController.avatars[0].svgData!)
-          : SvgPicture.asset("assets/images/group_logo.svg"),
-    );
-  });
 }

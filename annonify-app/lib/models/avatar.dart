@@ -1,4 +1,3 @@
-
 class Avatar {
   final String name;
   final String imageUrl;

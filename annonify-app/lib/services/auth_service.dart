@@ -31,7 +31,7 @@ class AuthService extends GetxService {
   // Check if user is authenticated
   Future<bool> isAuthenticated() async {
     final token = await getToken();
-    // getUserId();
+    getUserId();
     return token != null && token.isNotEmpty;
   }
 }

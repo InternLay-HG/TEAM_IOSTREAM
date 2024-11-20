@@ -33,7 +33,8 @@ class AvatarController extends GetxController {
     }
   }
 
-  Avatar? getAvatarByName(String name) {
-    return avatarRepository.getAvatarByName(name);
+  Avatar getAvatarByName(String name) {
+    int index = avatars.indexWhere((element) => element.name == name);
+    return avatars[index];
   }
 }
