@@ -11,7 +11,7 @@ hindi_tokenizer = AutoTokenizer.from_pretrained(hindi_model_name)
 hindi_model = AutoModelForSequenceClassification.from_pretrained(hindi_model_name)
 toxicity_model = pipeline("text-classification", model="unitary/toxic-bert")
 
-def check_hindi_toxicity(text, threshold=0.95):
+def check_hindi_toxicity(text, threshold=0.5):
     inputs = hindi_tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=512)
     outputs = hindi_model(**inputs)
     probabilities = torch.softmax(outputs.logits, dim=1)
