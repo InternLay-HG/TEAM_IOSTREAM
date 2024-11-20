@@ -70,7 +70,7 @@ class Post extends StatelessWidget {
               children: [
                 PostButton(
                   onTap: () {
-                    controller.like(post);
+                    controller.like(post.id!);
                   },
                   icon: Icons.favorite_border,
                   text: post.likes.toString(),

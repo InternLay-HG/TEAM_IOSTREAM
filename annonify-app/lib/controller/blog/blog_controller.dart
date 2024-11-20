@@ -80,9 +80,22 @@ class BlogController extends GetxController {
     }
   }
 
-  void like(PostModel post) {
-    // post.likes++;
-    // posts.refresh();
+  Future<void> like(String postId) async {
+    try {
+      final url = Uri.parse('$server/posts/$postId/like');
+      final response = await http.post(url);
+
+      if (response.statusCode == 200) {
+        refreshBlogs();
+
+        Get.snackbar("Success", "Post liked!");
+      } else {
+        final error = json.decode(response.body);
+        Get.snackbar("Error", error['message'] ?? "Failed to like the post.");
+      }
+    } catch (error) {
+      Get.snackbar("Error", "Something went wrong. Please try again.");
+    }
   }
 
   void clearFields() {
