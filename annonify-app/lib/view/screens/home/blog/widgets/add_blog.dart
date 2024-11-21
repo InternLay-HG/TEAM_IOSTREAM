@@ -59,10 +59,15 @@ class AddBlogDialog extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Get.back();
                 controller.addBlog();
               },
-              child: const Text("Add Blog"),
+              child: Obx(() {
+                return controller.isPosting.value
+                    ? const CircularProgressIndicator(
+                        color: Colors.white,
+                      )
+                    : const Text("Post Blog");
+              }),
             ),
           ],
         ),
