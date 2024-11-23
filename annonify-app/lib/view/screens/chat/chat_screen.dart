@@ -330,13 +330,14 @@ AppBar _buildAppBar(
 }
 
 Widget _avatar() {
-  return Obx(() {
-    AvatarController avatarController = Get.find<AvatarController>();
-    return CircleAvatar(
-      backgroundColor: Colors.white,
-      child: avatarController.avatars[0].svgData != null
-          ? SvgPicture.string(avatarController.avatars[0].svgData!)
-          : SvgPicture.asset("assets/images/group_logo.svg"),
-    );
-  });
+  // return Obx(() {
+  //   AvatarController avatarController = Get.find<AvatarController>();
+  return CircleAvatar(
+    backgroundColor: Colors.white,
+    child:
+        // avatarController.avatars[0].svgData != null
+        //     ? SvgPicture.string(avatarController.avatars[0].svgData!):
+        SvgPicture.asset("assets/images/group_logo.svg"),
+  );
+  // });
 }

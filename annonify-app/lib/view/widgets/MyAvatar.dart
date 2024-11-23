@@ -16,7 +16,8 @@ class MyAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AvatarController avatarController = Get.find<AvatarController>();
-    final avatar = avatarController.getAvatarByName(name!);
+    final avatar =
+        avatarController.getAvatarByName((name != null) ? name! : "");
 
     return CircleAvatar(
       backgroundColor: Colors.white,
