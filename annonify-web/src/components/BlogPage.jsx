@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { ObjectId } from "bson"; // Import ObjectId from bson package
 
-function BlogPage() {
+function BlogPage({ userId }) {
   const [posts, setPosts] = useState([]);
   const [newPost, setNewPost] = useState({
     title: "",
@@ -63,23 +64,42 @@ function BlogPage() {
         throw new Error("Failed to create post");
       }
       loadPosts();
-      setShowCreateForm(false); 
+      setShowCreateForm(false);
     } catch (err) {
       setError(err.message);
     }
   };
 
+  // Handle Like functionality
   const handleLike = async (postId) => {
+    if (!userId) {
+      alert("You must be logged in to like a post.");
+      return;
+    }
+
     try {
+      // Convert userId to ObjectId to ensure it's in the correct format
+      const objectIdUserId = new ObjectId(userId);
+
       const response = await fetch(`http://localhost:5000/api/posts/${postId}/like`, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: objectIdUserId.toString() }), // Pass ObjectId as string
       });
+
       if (!response.ok) {
-        throw new Error("Failed to like post");
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to like/unlike post");
       }
+
+      const updatedPost = await response.json();
+
+      // Update the post's like count in state
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
-          post._id === postId ? { ...post, likes: post.likes + 1 } : post
+          post._id === postId ? { ...post, likes: updatedPost.likes } : post
         )
       );
     } catch (err) {
@@ -125,7 +145,6 @@ function BlogPage() {
   return (
     <div className="flex min-h-screen bg-black">
       <main className="flex-1 flex flex-col bg-black text-white">
-        {/* Button to toggle form visibility */}
         <button
           onClick={() => setShowCreateForm((prev) => !prev)}
           className="bg-blue-600 text-white p-3 rounded-lg mb-6 mx-4 mt-6 hover:bg-blue-700 hover:shadow-lg transition duration-300"
@@ -133,7 +152,6 @@ function BlogPage() {
           {showCreateForm ? "Cancel" : "Create New Post"}
         </button>
 
-        {/* Create Post Form */}
         {showCreateForm && (
           <div className="p-6 bg-gray-800 shadow-lg rounded-lg mb-6">
             <form
@@ -175,11 +193,10 @@ function BlogPage() {
           </div>
         )}
 
-        {/* Posts Section */}
         <div
           id="posts"
           className="flex-1 overflow-y-auto p-6"
-          style={{ height: "calc(100vh - 250px)" }}
+          style={{ height: "calc(100vh - 200px)", maxHeight: "calc(100vh - 150px)" }}
         >
           {loading && <div className="text-center text-gray-500">Loading posts...</div>}
           <div className="flex flex-col gap-6">
@@ -205,7 +222,6 @@ function BlogPage() {
                   </div>
                 </div>
 
-                {/* Comments Section (Right Side) */}
                 <div className="w-full md:w-1/3 ml-6 mt-4 md:mt-0">
                   <form
                     onSubmit={(e) => {
@@ -221,19 +237,19 @@ function BlogPage() {
                       name="commentContent"
                       placeholder="Add a comment"
                       required
-                      className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg mb-4 text-lg"
+                      className="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white mb-4"
                     />
                     <button
                       type="submit"
-                      className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg"
+                      className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"
                     >
-                      Comment
+                      Add Comment
                     </button>
                   </form>
 
                   <div className="mt-4">
                     {post.comments.map((comment) => (
-                      <div key={comment._id} className="bg-gray-700 p-3 rounded-lg mb-4 shadow-md">
+                      <div key={comment._id} className="bg-gray-700 p-3 rounded-lg mb-4">
                         <p className="text-white">{comment.content}</p>
                       </div>
                     ))}
