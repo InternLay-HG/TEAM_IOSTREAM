@@ -12,6 +12,7 @@ class Blogs extends StatelessWidget {
 
     return Obx(
       () => ListView.builder(
+        controller: controller.scrollController,
         itemCount: controller.posts.length,
         itemBuilder: (context, index) {
           return InkWell(

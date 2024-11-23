@@ -32,7 +32,7 @@ class _ChatScreenState extends State<ChatScreen>
   @override
   void initState() {
     super.initState();
-    _chatSocketService.connectToSocket(controller.userId!, group.id);
+    _chatSocketService.connectToSocket(controller.userId ?? "", group.id);
     _chatSocketService.joinGroup(group.id);
 
     // Add listener to scroll to bottom whenever messages are updated

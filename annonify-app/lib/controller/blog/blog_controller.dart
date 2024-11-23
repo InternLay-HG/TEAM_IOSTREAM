@@ -99,6 +99,7 @@ class BlogController extends GetxController {
         final responseData = json.decode(responseBody);
         refreshBlogs();
         Get.back();
+        scrollToTop();
         Get.snackbar("Success", "Blog added!");
         clearFields();
       } else {
@@ -134,6 +135,18 @@ class BlogController extends GetxController {
     titleController.clear();
     bodyController.clear();
     selectedImage.value = null;
+  }
+
+  final ScrollController scrollController = ScrollController();
+
+  void scrollToTop() {
+    if (scrollController.hasClients) {
+      scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 100),
+        curve: Curves.easeOut,
+      );
+    }
   }
 
   Future<void> refreshBlogs() async {
