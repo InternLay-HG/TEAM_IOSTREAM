@@ -52,7 +52,7 @@ io.on('connection', (socket) => {
     socket.on('join group', async (groupId) => {
         try {
             // Validate the groupId
-            const validGroupId = new mongoose.Types.ObjectId(groupId);
+            const validGroupId = new mongoose.Types.ObjectId(groupId); // install mongoose @types
             const groupExists = await Group.findById(validGroupId);
             if (!groupExists) {
                 console.error(`Group with ID ${groupId} does not exist.`);
@@ -78,66 +78,94 @@ io.on('connection', (socket) => {
         console.log(`A user disconnected: ${socket.id}`);
     });
 
-    socket.on('chat message', async (data) => {
+    // Handle the chat message event
+    socket.on('chat message', async (data, files) => {
+        console.log('Files received:', files);  // Check if files are being received
         console.log('Message received:', data);
-    
-        const { content, user, group, timestamp } = data;
-    
-        try {
-            const response = await axios.post('http://localhost:5001/check-toxicity', { message: content });
-            const { allowed, reason, score } = response.data;
 
-            // If the message is not allowed, send a blocked message feedback
-            if (!allowed) {
-                socket.emit('messageBlocked', { reason, score });
-                console.log('Message blocked due to toxicity');
-                return; // Prevent further processing of the toxic message
+        const { content, user, group, timestamp } = data;
+
+        // Assuming `files` is an array of uploaded files
+        let attachments = [];
+    if (files) {
+        for (const file of files) {
+            if (file.size > maxFileSize) {
+                socket.emit('fileError', { message: 'File is too large' });
+                return;
             }
+            if (!['image/jpeg', 'image/png', 'application/pdf'].includes(file.mimetype)) {
+                socket.emit('fileError', { message: 'Invalid file type' });
+                return;
+            }
+
+            const attachment = {
+                filename: file.originalname,
+                filePath: `/uploads/${file.filename}`,
+                fileType: file.mimetype,
+            };
+            attachments.push(attachment);
+        }
+    }
+
+    console.log('Attachments:', attachments);
+
+        try {
+            // Check for message toxicity if content is provided
+            if (content) {
+                const response = await axios.post('http://localhost:5001/check-toxicity', { message: content });
+                const { allowed, reason, score } = response.data;
+
+                if (!allowed) {
+                    socket.emit('messageBlocked', { reason, score });
+                    console.log('Message blocked due to toxicity');
+                    return;
+                }
+            }
+
             const validUserId = new mongoose.Types.ObjectId(user._id);
             const validGroupId = new mongoose.Types.ObjectId(group._id);
-    
-            // Check if the group exists
+
             const groupExists = await Group.findById(validGroupId);
             if (!groupExists) {
                 console.error(`Group with ID ${group._id} does not exist.`);
                 return;
             }
-    
-            // Fetch the latest user details
+
             const userDetails = await User.findById(validUserId, 'name');
             if (!userDetails) {
                 console.error(`User with ID ${user._id} not found.`);
                 return;
             }
-    
-            // Save the message to MongoDB
+
+            // If content is empty but there's an attachment, set content to "Attachment"
+            const messageContent = content || "Attachment";
+
             const newMessage = new Message({
-                content,
+                content: messageContent, // Ensure content is not empty
                 user: validUserId,
                 group: validGroupId,
                 timestamp: timestamp || new Date(),
+                attachments: attachments,  // Add the attachments
             });
-    
+
             const savedMessage = await newMessage.save();
             console.log('Message saved successfully:', savedMessage);
-    
-            // Broadcast the message to the group with the latest user data
+
             io.to(validGroupId.toString()).emit('chat message', {
                 _id: savedMessage._id,
                 content: savedMessage.content,
                 user: {
                     _id: savedMessage.user,
-                    name: userDetails.name, // Updated user name
+                    name: userDetails.name,
                 },
                 group: savedMessage.group,
                 timestamp: savedMessage.timestamp,
+                attachments: savedMessage.attachments,  // Send attachments as well
             });
         } catch (err) {
             console.error('Error saving message:', err.message);
         }
     });
-    
-    
 });
 
 const { PORT } = require('./config/server_config');

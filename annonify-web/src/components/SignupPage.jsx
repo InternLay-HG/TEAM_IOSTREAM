@@ -38,11 +38,8 @@ function SignupPage({ onSignup, selectedAvatar, onLoginClick }) {
 
       if (response.ok) {
         console.log("Signup successful:", data);
-        alert("Account created successfully!");
-
-        // Store userId in localStorage
-        localStorage.setItem("userId", data.userId);
-        onSignup(); // Redirect to chat
+        alert("Account created successfully! Please log in.");
+        onLoginClick(); // Redirect to login page after successful signup
       } else {
         console.error("Signup failed:", data);
         alert("Signup failed! Please try again.");
@@ -60,26 +57,27 @@ function SignupPage({ onSignup, selectedAvatar, onLoginClick }) {
         <p className="text-gray-400 mb-6">CREATE NEW ACCOUNT</p>
 
         <form onSubmit={handleSubmit} className="w-full flex flex-col items-center">
+          {/* Input fields */}
           <div className="relative mb-6 w-full">
-            <input 
-              type="email" 
-              placeholder="E-mail" 
+            <input
+              type="email"
+              placeholder="E-mail"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="input-field border-b border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 px-4 py-2 w-full bg-transparent pr-10" 
+              className="input-field border-b border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 px-4 py-2 w-full bg-transparent pr-10"
             />
             <MdAlternateEmail className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-xl" />
           </div>
 
           <div className="relative mb-6 w-full">
-            <input 
-              type={passwordVisible ? "text" : "password"} 
-              placeholder="Password" 
+            <input
+              type={passwordVisible ? "text" : "password"}
+              placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="input-field border-b border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 px-4 py-2 w-full bg-transparent pr-10"
             />
-            <span 
+            <span
               className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-xl cursor-pointer"
               onClick={() => setPasswordVisible(!passwordVisible)}
             >
@@ -88,14 +86,14 @@ function SignupPage({ onSignup, selectedAvatar, onLoginClick }) {
           </div>
 
           <div className="relative mb-6 w-full">
-            <input 
-              type={confirmPasswordVisible ? "text" : "password"} 
-              placeholder="Confirm Password" 
+            <input
+              type={confirmPasswordVisible ? "text" : "password"}
+              placeholder="Confirm Password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               className="input-field border-b border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 px-4 py-2 w-full bg-transparent pr-10"
             />
-            <span 
+            <span
               className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-xl cursor-pointer"
               onClick={() => setConfirmPasswordVisible(!confirmPasswordVisible)}
             >
@@ -104,18 +102,18 @@ function SignupPage({ onSignup, selectedAvatar, onLoginClick }) {
           </div>
 
           <div className="relative mb-6 w-full">
-            <input 
-              type="text" 
-              placeholder="Name" 
+            <input
+              type="text"
+              placeholder="Name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="input-field border-b border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 px-4 py-2 w-full bg-transparent" 
+              className="input-field border-b border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 px-4 py-2 w-full bg-transparent"
             />
             <MdDriveFileRenameOutline className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-xl" />
           </div>
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="signup-btn mt-6 bg-blue-500 text-[#1a1a1a] font-semibold px-0 py-2.5 rounded-3xl hover:bg-blue-600 transition duration-300 w-full max-w-xs mx-auto"
           >
             SIGN UP
@@ -124,8 +122,8 @@ function SignupPage({ onSignup, selectedAvatar, onLoginClick }) {
 
         <p className="text-gray-400 mt-6 text-center">
           Already have an account?{" "}
-          <span 
-            className="text-blue-500 cursor-pointer" 
+          <span
+            className="text-blue-500 cursor-pointer"
             onClick={onLoginClick} // Redirect to login page
           >
             LOGIN

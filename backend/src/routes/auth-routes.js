@@ -10,7 +10,11 @@ const Post = require('../models/post');
 const Assignment = require('../models/assignment'); // Import your Assignment model
 const Submission = require('../models/submission')
 const mongoose = require('mongoose');
+const Like = require('../models/like')
 const User = require('../models/user')
+const path = require('path');
+
+
 
 const router = express.Router();
 
@@ -82,7 +86,13 @@ router.get('/messages/:groupId', async (req, res) => {
         res.status(500).json({ error: 'Error fetching messages' });
     }
 });
-
+router.post('/upload', upload.single('file'), (req, res) => {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+    const filePath = `/uploads/${req.file.filename}`;
+    res.status(200).json({ attachmentUrl: filePath });
+  });
 // Blog routes
 router.post('/posts', upload.single('image'), async (req, res) => {
     try {
@@ -90,6 +100,7 @@ router.post('/posts', upload.single('image'), async (req, res) => {
             title: req.body.title,
             description: req.body.description,
             image: req.file.path,
+            likes: 0,
         });
         await post.save();
         res.status(201).json(post);
@@ -97,6 +108,53 @@ router.post('/posts', upload.single('image'), async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+router.post('/posts/:id/like', async (req, res) => {
+    try {
+        const { id } = req.params; // Post ID
+        const { userId } = req.body; // User performing the like/unlike action
+
+        // Validate userId
+        if (!userId) {
+            return res.status(400).json({ error: 'User ID is required.' });
+        }
+
+        // Validate post ID
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ error: 'Invalid Post ID.' });
+        }
+
+        // Check if post exists
+        const post = await Post.findById(id);
+        if (!post) {
+            return res.status(404).json({ error: 'Post not found.' });
+        }
+
+        // Toggle like
+        const likeExists = await Like.findOne({ postId: id, userId });
+        if (likeExists) {
+            // If user already liked, remove the like
+            await Like.findOneAndDelete({ postId: id, userId });
+            post.likes -= 1;
+        } else {
+            // Add a new like
+            await Like.create({ postId: id, userId });
+            post.likes += 1;
+        }
+
+        // Save the updated post
+        await post.save();
+
+        res.status(200).json({
+            message: 'Like toggled successfully.',
+            likes: post.likes,
+        });
+    } catch (err) {
+        console.error('Error toggling like:', err.message);
+        res.status(500).json({ error: 'An error occurred while toggling the like.' });
+    }
+});
+
+
 
 // User routes
 router.get('/user', passport.authenticate('jwt', { session: false }), async (req, res) => {
