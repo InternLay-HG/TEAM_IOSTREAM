@@ -202,8 +202,8 @@ Widget _buildAppBar(BuildContext context, TabController tabController,
                         InkWell(
                           key: const ValueKey('logo'),
                           onTap: () {},
-                          // child: _avatar(avatarName),
-                          child: MyAvatar(name: controller.userAvatar),
+                          child: _avatar(),
+                          // child: MyAvatar(name: controller.userAvatar),
                         ),
                       ],
                     ),
@@ -216,8 +216,20 @@ Widget _buildAppBar(BuildContext context, TabController tabController,
           tabs: const [
             Text("All Chats"),
             Text("Blogs"),
-            Text("Links"),
+            // Text("Links"),
           ],
         ),
       ));
+}
+
+Widget _avatar() {
+  return Obx(() {
+    AvatarController avatarController = Get.find<AvatarController>();
+    return CircleAvatar(
+      backgroundColor: Colors.white,
+      child: avatarController.avatars[0].svgData != null
+          ? SvgPicture.string(avatarController.avatars[0].svgData!)
+          : SvgPicture.asset("assets/images/group_logo.svg"),
+    );
+  });
 }

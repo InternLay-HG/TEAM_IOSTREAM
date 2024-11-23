@@ -78,7 +78,8 @@ class _ChatAvatarState extends State<ChatAvatar> {
         ),
       ),
       child: avatar.svgData != null
-          ? SvgPicture.string(avatar.svgData!)
+          ? SvgPicture.string(avatar.svgData!
+              .replaceAll(RegExp(r'<metadata[^>]*>(.|\n)*?</metadata>'), ''))
           : SvgPicture.asset("assets/images/group_logo.svg"),
     );
   }

@@ -78,7 +78,7 @@ class ReceiveMessage extends StatelessWidget {
     );
 
     return Padding(
-      padding: const EdgeInsets.only(right: 50, left: 18, top: 5, bottom: 5),
+      padding: const EdgeInsets.only(right: 50, left: 8, top: 5, bottom: 5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -145,7 +145,7 @@ class SentMessage extends StatelessWidget {
     );
 
     return Padding(
-      padding: const EdgeInsets.only(right: 18.0, left: 50, top: 5, bottom: 5),
+      padding: const EdgeInsets.only(right: 8.0, left: 50, top: 5, bottom: 5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.end,

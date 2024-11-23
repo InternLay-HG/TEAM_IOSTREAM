@@ -28,6 +28,24 @@ class BlogController extends GetxController {
     fetchPosts();
   }
 
+  //Fetch Posts
+  Future<void> fetchPosts() async {
+    try {
+      final url = Uri.parse('$server/posts');
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        posts.assignAll(
+            data.map((json) => PostModel.fromJson(json)).toList().reversed);
+      } else {
+        throw Exception('Failed to load posts');
+      }
+    } catch (error) {
+      Get.snackbar("Error", "Failed to fetch posts.");
+    }
+  }
+
   // Function to pick an image
   Future<void> pickImage() async {
     final ImagePicker picker = ImagePicker();
@@ -40,7 +58,14 @@ class BlogController extends GetxController {
     }
   }
 
+  final isPosting = false.obs;
+
   Future<void> addBlog() async {
+    if (titleController.text.isEmpty || bodyController.text.isEmpty) {
+      Get.snackbar("Error", "Title and body cannot be empty.");
+      return;
+    }
+
     final Map<String, String> body = {
       "title": titleController.text,
       "description": bodyController.text,
@@ -48,6 +73,8 @@ class BlogController extends GetxController {
     var request = http.MultipartRequest('POST', Uri.parse('$server/posts'));
 
     try {
+      isPosting.value = true; // Show loader
+
       request.fields.addAll(body);
       if (selectedImage.value != null) {
         String contentType = 'image/jpeg'; // Default to JPEG
@@ -60,23 +87,29 @@ class BlogController extends GetxController {
           selectedImage.value!.path,
           contentType: MediaType('image', extension),
         ));
+      } else {
+        Get.snackbar("Error", "Image not selected.");
+        return;
       }
 
       var response = await request.send();
-      // Handle multipart response body
       final responseBody = await response.stream.bytesToString();
 
       if (response.statusCode == 201) {
         final responseData = json.decode(responseBody);
         refreshBlogs();
+        Get.back();
+        scrollToTop();
         Get.snackbar("Success", "Blog added!");
         clearFields();
       } else {
         final error = json.decode(responseBody);
-        Get.snackbar("Error", error['message'] ?? "failed");
+        Get.snackbar("Error", error['message'] ?? "Failed to post the blog.");
       }
     } catch (error) {
       Get.snackbar("Error", "Something went wrong. Please try again.");
+    } finally {
+      isPosting.value = false; // Hide loader
     }
   }
 
@@ -104,21 +137,15 @@ class BlogController extends GetxController {
     selectedImage.value = null;
   }
 
-  //Fetch Posts
-  Future<void> fetchPosts() async {
-    try {
-      final url = Uri.parse('$server/posts');
-      final response = await http.get(url);
+  final ScrollController scrollController = ScrollController();
 
-      if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
-        posts.assignAll(data.map((json) => PostModel.fromJson(json)).toList());
-      } else {
-        throw Exception('Failed to load posts');
-      }
-    } catch (error) {
-      print(error);
-      Get.snackbar("Error", "Failed to fetch posts.");
+  void scrollToTop() {
+    if (scrollController.hasClients) {
+      scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 100),
+        curve: Curves.easeOut,
+      );
     }
   }
 

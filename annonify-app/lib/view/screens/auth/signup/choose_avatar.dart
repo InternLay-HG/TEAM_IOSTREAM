@@ -22,7 +22,7 @@ class _ChooseAvatarState extends State<ChooseAvatar> {
       child: Scaffold(
         body: Padding(
           padding:
-              const EdgeInsets.only(top: 25, left: 25, right: 25, bottom: 10),
+          const EdgeInsets.only(top: 25, left: 25, right: 25, bottom: 10),
           child: Column(
             children: [
               const SizedBox(height: 15),
@@ -44,9 +44,15 @@ class _ChooseAvatarState extends State<ChooseAvatar> {
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
                       crossAxisSpacing:
-                          (MediaQuery.of(context).size.width - 50) * 0.04,
+                      (MediaQuery
+                          .of(context)
+                          .size
+                          .width - 50) * 0.04,
                       mainAxisSpacing:
-                          (MediaQuery.of(context).size.width - 50) * 0.04,
+                      (MediaQuery
+                          .of(context)
+                          .size
+                          .width - 50) * 0.04,
                     ),
                     itemCount: avatarController.avatars.length,
                     itemBuilder: (context, index) {
@@ -59,14 +65,15 @@ class _ChooseAvatarState extends State<ChooseAvatar> {
                         child: Obx(() {
                           return CircleAvatar(
                             backgroundColor: (avatarController
-                                        .selectedAvatar.value ==
-                                    avatar.name)
+                                .selectedAvatar.value ==
+                                avatar.name)
                                 ? DarkThemeColors.accentColor.withOpacity(0.5)
                                 : Colors.transparent,
                             child: avatar.svgData != null
-                                ? SvgPicture.string((avatar.svgData)!.replaceAll(
+                                ? SvgPicture.string(
+                                (avatar.svgData)!.replaceAll(
                                     RegExp(
-                                        r'<metadata[^>]*>(.|\n)*?<\/metadata>'),
+                                        r'<metadata[^>]*>(.|\n)*?</metadata>'),
                                     ''))
                                 : const CircularProgressIndicator(),
                           );
