@@ -33,8 +33,18 @@ class AvatarController extends GetxController {
     }
   }
 
-  Avatar getAvatarByName(String name) {
-    int index = avatars.indexWhere((element) => element.name == name);
-    return avatars[index];
+  Avatar? getAvatarByName(String name) {
+    try {
+      int index = avatars.indexWhere((element) => element.name == name);
+      if (index != -1) {
+        return avatars[index];
+      } else {
+        print("Avatar with name '$name' not found. Returning null.");
+        return null; // Safely return null if the name is not found
+      }
+    } catch (e) {
+      print("Error in getAvatarByName: $e");
+      return null; // Return null to avoid unhandled exceptions
+    }
   }
 }

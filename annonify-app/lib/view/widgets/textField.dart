@@ -2,14 +2,16 @@ import 'package:annonify/controller/app/theme_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class BlogField extends StatelessWidget {
+class BorderdTF extends StatelessWidget {
   final String hint;
   final TextEditingController controller;
+  final int maxLines;
 
-  const BlogField({
+  const BorderdTF({
     super.key,
     required this.hint,
     required this.controller,
+    this.maxLines = 1,
   });
 
   @override
@@ -18,6 +20,7 @@ class BlogField extends StatelessWidget {
     return TextField(
       cursorColor: themeController.textHeading,
       controller: controller,
+      maxLines: maxLines,
       decoration: InputDecoration(
         hintText: hint,
         border: const OutlineInputBorder(),

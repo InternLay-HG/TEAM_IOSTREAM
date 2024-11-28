@@ -38,10 +38,10 @@ class SignInController extends GetxController {
 
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
-        print("login1");
+        // print("login1");
 
         if (responseData['success']) {
-          print("login2");
+          // print("login2");
           final userId = responseData['data']['userId'];
           final token = responseData['data']['token'];
 

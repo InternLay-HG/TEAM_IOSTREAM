@@ -1,8 +1,8 @@
 import 'package:annonify/services/auth_service.dart';
 import 'package:annonify/utils/user.dart';
+import 'package:annonify/view/screens/home/assignments/assignments.dart';
 import 'package:annonify/view/screens/home/blog/blogs.dart';
 import 'package:annonify/view/screens/home/chats/all_chats.dart';
-import 'package:annonify/view/screens/home/links/links.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -14,7 +14,7 @@ class HomePageController extends GetxController
   final screens = [
     const AllChats(),
     const Blogs(),
-    // const Links(),
+    const Assignments(),
   ];
   late TabController tabController;
 
@@ -34,7 +34,12 @@ class HomePageController extends GetxController
   }
 
   Future<void> getAvatar() async {
-    userAvatar = await User().getAvatarName(authService.userId!);
+    if (authService.userId != null) {
+      userAvatar = await User().getAvatarName(authService.userId!);
+    } else {
+      print('User ID is null; cannot fetch avatar.');
+      userAvatar = 'default_avatar';
+    }
   }
 
   //Search Controller

@@ -4,6 +4,7 @@ import 'package:annonify/controller/app/home_page_controller.dart';
 import 'package:annonify/controller/app/theme_controller.dart';
 import 'package:annonify/services/auth_service.dart';
 import 'package:annonify/utils/user.dart';
+import 'package:annonify/view/screens/home/assignments/widgets/add_assignment.dart';
 import 'package:annonify/view/screens/home/blog/widgets/add_blog.dart';
 import 'package:annonify/view/widgets/MyAvatar.dart';
 import 'package:flutter/material.dart';
@@ -88,10 +89,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ),
                   ),
                 ),
-                floatingActionButton: (_controller.currentIndex.value == 1)
+                floatingActionButton: (_controller.currentIndex.value == 1 ||
+                        _controller.currentIndex.value == 2)
                     ? FloatingActionButton(
                         onPressed: () {
-                          Get.dialog(const AddBlogDialog());
+                          (_controller.currentIndex.value == 1)
+                              ? Get.dialog(const AddBlogDialog())
+                              : Get.dialog(const AddAssignment());
                         },
                         child: const Icon(Icons.post_add),
                       )
@@ -216,7 +220,7 @@ Widget _buildAppBar(BuildContext context, TabController tabController,
           tabs: const [
             Text("All Chats"),
             Text("Blogs"),
-            // Text("Links"),
+            Text("Assignments"),
           ],
         ),
       ));

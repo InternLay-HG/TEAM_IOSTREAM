@@ -32,6 +32,7 @@ class _ChatScreenState extends State<ChatScreen>
   @override
   void initState() {
     super.initState();
+    print("object:${controller.userId}");
     _chatSocketService.connectToSocket(controller.userId ?? "", group.id);
     _chatSocketService.joinGroup(group.id);
 
@@ -109,6 +110,7 @@ class _ChatScreenState extends State<ChatScreen>
                     // Add chat messages or other content here
                     Obx(
                       () => ListView.builder(
+                        controller: controller.scrollController,
                         itemCount: _chatSocketService.messages.length,
                         itemBuilder: (context, index) {
                           final message = _chatSocketService.messages[index];
@@ -180,11 +182,14 @@ class _ChatScreenState extends State<ChatScreen>
                     ),
                     IconButton(
                       onPressed: () {
-                        _chatSocketService.sendMessage(
-                            controller.messageController.text,
-                            userId!,
-                            group.id);
-                        controller.clearMessage();
+                        if (userId != null) {
+                          _chatSocketService.sendMessage(
+                              controller.messageController.text,
+                              userId,
+                              group.id);
+                          controller.clearMessage();
+                        } else
+                          print("nulluser");
                       },
                       icon: const Icon(
                         Icons.send,

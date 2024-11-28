@@ -16,14 +16,19 @@ class MyAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AvatarController avatarController = Get.find<AvatarController>();
-    final avatar =
-        avatarController.getAvatarByName((name != null) ? name! : "");
+    final avatar = avatarController.getAvatarByName(name ?? "");
 
-    return CircleAvatar(
-      backgroundColor: Colors.white,
-      child: avatar.svgData != null
-          ? SvgPicture.string(avatar.svgData!)
-          : SvgPicture.asset("assets/images/group_logo.svg"),
+    return Obx(
+      () {
+        print(avatarController.avatars);
+        print(avatar);
+        return CircleAvatar(
+          backgroundColor: Colors.white,
+          child: (avatar != null && avatar.svgData != null)
+              ? SvgPicture.string(avatar.svgData!)
+              : SvgPicture.asset("assets/images/group_logo.svg"),
+        );
+      },
     );
   }
 }
@@ -78,7 +83,7 @@ class _ChatAvatarState extends State<ChatAvatar> {
           Radius.circular(8),
         ),
       ),
-      child: avatar.svgData != null
+      child: avatar != null && avatar.svgData != null
           ? SvgPicture.string(avatar.svgData!
               .replaceAll(RegExp(r'<metadata[^>]*>(.|\n)*?</metadata>'), ''))
           : SvgPicture.asset("assets/images/group_logo.svg"),

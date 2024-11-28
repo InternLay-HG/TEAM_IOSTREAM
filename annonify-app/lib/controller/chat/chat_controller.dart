@@ -22,6 +22,7 @@ class ChatController extends GetxController {
   Future<void> onInit() async {
     super.onInit();
     userId = (await authService.getUserId());
+    print("chatcon:$userId");
   }
 
   void clearSearchQuery() {
@@ -37,6 +38,7 @@ class ChatController extends GetxController {
 
   void scrollToBottom() {
     if (scrollController.hasClients) {
+      // print("scroll$userId");
       scrollController.animateTo(
         scrollController.position.extentTotal,
         duration: const Duration(milliseconds: 100),
